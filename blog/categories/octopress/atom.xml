@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: octopress | Xblog]]></title>
-  <link href="http://passol.tk/blog/categories/octopress/atom.xml" rel="self"/>
-  <link href="http://passol.tk/"/>
-  <updated>2015-09-03T21:56:22+08:00</updated>
-  <id>http://passol.tk/</id>
+  <link href="http://passol1988.github.io/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://passol1988.github.io/"/>
+  <updated>2015-09-04T03:39:20+08:00</updated>
+  <id>http://passol1988.github.io/</id>
   <author>
     <name><![CDATA[passol]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[部署octopress到heroku]]></title>
-    <link href="http://passol.tk/blog/2014/10/21/bu-shu-octopressdao-heroku/"/>
+    <link href="http://passol1988.github.io/blog/2014/10/21/bu-shu-octopressdao-heroku/"/>
     <updated>2014-10-21T23:15:19+08:00</updated>
-    <id>http://passol.tk/blog/2014/10/21/bu-shu-octopressdao-heroku</id>
+    <id>http://passol1988.github.io/blog/2014/10/21/bu-shu-octopressdao-heroku</id>
     <content type="html"><![CDATA[<h2>下载octopress</h2>
 
 <pre><code>$ git clone git@github.com:imathis/octopress.git # fork octopress

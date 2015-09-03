@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: block,ios | Xblog]]></title>
-  <link href="http://passol.tk/blog/categories/block-ios/atom.xml" rel="self"/>
-  <link href="http://passol.tk/"/>
-  <updated>2015-09-03T21:56:22+08:00</updated>
-  <id>http://passol.tk/</id>
+  <link href="http://passol1988.github.io/blog/categories/block-ios/atom.xml" rel="self"/>
+  <link href="http://passol1988.github.io/"/>
+  <updated>2015-09-04T03:39:20+08:00</updated>
+  <id>http://passol1988.github.io/</id>
   <author>
     <name><![CDATA[passol]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[理解block]]></title>
-    <link href="http://passol.tk/blog/2014/10/24/li-jie-block/"/>
+    <link href="http://passol1988.github.io/blog/2014/10/24/li-jie-block/"/>
     <updated>2014-10-24T00:00:35+08:00</updated>
-    <id>http://passol.tk/blog/2014/10/24/li-jie-block</id>
+    <id>http://passol1988.github.io/blog/2014/10/24/li-jie-block</id>
     <content type="html"><![CDATA[<h2>引言</h2>
 
 <p>Blocks非常方便使用,在使用中通常使用以下方式:</p>

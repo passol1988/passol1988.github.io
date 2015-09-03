@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: ios,rac,reactivecocoa,mvvm | Xblog]]></title>
-  <link href="http://passol.tk/blog/categories/ios-rac-reactivecocoa-mvvm/atom.xml" rel="self"/>
-  <link href="http://passol.tk/"/>
-  <updated>2015-09-03T21:56:22+08:00</updated>
-  <id>http://passol.tk/</id>
+  <link href="http://passol1988.github.io/blog/categories/ios-rac-reactivecocoa-mvvm/atom.xml" rel="self"/>
+  <link href="http://passol1988.github.io/"/>
+  <updated>2015-09-04T03:39:20+08:00</updated>
+  <id>http://passol1988.github.io/</id>
   <author>
     <name><![CDATA[passol]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[用RAC使用MVVM教程(1)]]></title>
-    <link href="http://passol.tk/blog/2014/10/25/yong-racshi-yong-mvvmjiao-cheng-1/"/>
+    <link href="http://passol1988.github.io/blog/2014/10/25/yong-racshi-yong-mvvmjiao-cheng-1/"/>
     <updated>2014-10-25T02:38:33+08:00</updated>
-    <id>http://passol.tk/blog/2014/10/25/yong-racshi-yong-mvvmjiao-cheng-1</id>
+    <id>http://passol1988.github.io/blog/2014/10/25/yong-racshi-yong-mvvmjiao-cheng-1</id>
     <content type="html"><![CDATA[<blockquote><p>所谓的IOS架构,MVC就代表重量级的VC  &ndash; <a href="https://twitter.com/Colin_Campbell/status/293167951132098560">Colin Campbell</a></p></blockquote>
 
 <p>本教程将讲述另一种架构APP的方式:MVVM.它搭配MVVM方式，提供了可替代MVC方式的完美方案</p>

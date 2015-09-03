@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: rac,reactivecocoa,翻译 | Xblog]]></title>
-  <link href="http://passol.tk/blog/categories/rac-reactivecocoa-fan-yi/atom.xml" rel="self"/>
-  <link href="http://passol.tk/"/>
-  <updated>2015-09-03T21:56:22+08:00</updated>
-  <id>http://passol.tk/</id>
+  <link href="http://passol1988.github.io/blog/categories/rac-reactivecocoa-fan-yi/atom.xml" rel="self"/>
+  <link href="http://passol1988.github.io/"/>
+  <updated>2015-09-04T03:39:20+08:00</updated>
+  <id>http://passol1988.github.io/</id>
   <author>
     <name><![CDATA[passol]]></name>
     
@@ -15,18 +15,18 @@
   
   <entry>
     <title type="html"><![CDATA[FRP in IOS翻译(5)]]></title>
-    <link href="http://passol.tk/blog/2014/10/24/frp-in-iosfan-yi-5/"/>
+    <link href="http://passol1988.github.io/blog/2014/10/24/frp-in-iosfan-yi-5/"/>
     <updated>2014-10-24T03:04:09+08:00</updated>
-    <id>http://passol.tk/blog/2014/10/24/frp-in-iosfan-yi-5</id>
+    <id>http://passol1988.github.io/blog/2014/10/24/frp-in-iosfan-yi-5</id>
     <content type="html"><![CDATA[<h1>MVVM</h1>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[FRP in IOS翻译(4)]]></title>
-    <link href="http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-4/"/>
+    <link href="http://passol1988.github.io/blog/2014/10/23/frp-in-iosfan-yi-4/"/>
     <updated>2014-10-23T01:23:06+08:00</updated>
-    <id>http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-4</id>
+    <id>http://passol1988.github.io/blog/2014/10/23/frp-in-iosfan-yi-4</id>
     <content type="html"><![CDATA[<h1>RAC实践</h1>
 
 <p>作者举例<a href="https://github.com/AshFurrow/FunctionalReactivePixels">FunctionalReactivePixels</a></p>
@@ -215,9 +215,9 @@ if (dictionary[@"comments_count"]) {
   
   <entry>
     <title type="html"><![CDATA[FRP in IOS翻译(3)]]></title>
-    <link href="http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-3/"/>
+    <link href="http://passol1988.github.io/blog/2014/10/23/frp-in-iosfan-yi-3/"/>
     <updated>2014-10-23T01:23:00+08:00</updated>
-    <id>http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-3</id>
+    <id>http://passol1988.github.io/blog/2014/10/23/frp-in-iosfan-yi-3</id>
     <content type="html"><![CDATA[<h1>介绍ReactiveCocoa</h1>
 
 <h2>安装ReactiveCocoa</h2>
@@ -388,9 +388,9 @@ self.button.rac_command = [[RACCommand alloc] initWithEnabled:validEmailSingal s
   
   <entry>
     <title type="html"><![CDATA[FRP in IOS翻译(2)]]></title>
-    <link href="http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-2/"/>
+    <link href="http://passol1988.github.io/blog/2014/10/23/frp-in-iosfan-yi-2/"/>
     <updated>2014-10-23T01:22:57+08:00</updated>
-    <id>http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-2</id>
+    <id>http://passol1988.github.io/blog/2014/10/23/frp-in-iosfan-yi-2</id>
     <content type="html"><![CDATA[<h1>使用<em>RXCollections</em>函数式编程</h1>
 
 <h2>高阶函数</h2>
@@ -486,9 +486,9 @@ NSNumber *sum = [array rx_foldWithBlock:^id(id memo, id each){
   
   <entry>
     <title type="html"><![CDATA[FRP in IOS翻译(1)]]></title>
-    <link href="http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi/"/>
+    <link href="http://passol1988.github.io/blog/2014/10/23/frp-in-iosfan-yi/"/>
     <updated>2014-10-23T01:21:19+08:00</updated>
-    <id>http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi</id>
+    <id>http://passol1988.github.io/blog/2014/10/23/frp-in-iosfan-yi</id>
     <content type="html"><![CDATA[<h1>哲学</h1>
 
 <ul>

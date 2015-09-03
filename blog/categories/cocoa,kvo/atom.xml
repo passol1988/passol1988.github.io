@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: cocoa，kvo | Xblog]]></title>
-  <link href="http://passol.tk/blog/categories/cocoa,kvo/atom.xml" rel="self"/>
-  <link href="http://passol.tk/"/>
-  <updated>2015-09-03T21:56:22+08:00</updated>
-  <id>http://passol.tk/</id>
+  <link href="http://passol1988.github.io/blog/categories/cocoa,kvo/atom.xml" rel="self"/>
+  <link href="http://passol1988.github.io/"/>
+  <updated>2015-09-04T03:39:20+08:00</updated>
+  <id>http://passol1988.github.io/</id>
   <author>
     <name><![CDATA[passol]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[KVO程序设计(官方文档)]]></title>
-    <link href="http://passol.tk/blog/2014/10/28/kvocheng-xu-she-ji-guan-fang-wen-dang/"/>
+    <link href="http://passol1988.github.io/blog/2014/10/28/kvocheng-xu-she-ji-guan-fang-wen-dang/"/>
     <updated>2014-10-28T00:04:03+08:00</updated>
-    <id>http://passol.tk/blog/2014/10/28/kvocheng-xu-she-ji-guan-fang-wen-dang</id>
+    <id>http://passol1988.github.io/blog/2014/10/28/kvocheng-xu-she-ji-guan-fang-wen-dang</id>
     <content type="html"><![CDATA[<h1>简要介绍</h1>
 
 <p><a href="" title="key-value observing">kvo</a>是允许对象监视另一对象属性变化的一种机制.</p>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: kvc,cocoa,ios | Xblog]]></title>
-  <link href="http://passol.tk/blog/categories/kvc-cocoa-ios/atom.xml" rel="self"/>
-  <link href="http://passol.tk/"/>
-  <updated>2015-09-03T21:56:22+08:00</updated>
-  <id>http://passol.tk/</id>
+  <link href="http://passol1988.github.io/blog/categories/kvc-cocoa-ios/atom.xml" rel="self"/>
+  <link href="http://passol1988.github.io/"/>
+  <updated>2015-09-04T03:39:20+08:00</updated>
+  <id>http://passol1988.github.io/</id>
   <author>
     <name><![CDATA[passol]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[KVC程序设计(官方文档)]]></title>
-    <link href="http://passol.tk/blog/2014/10/29/kvccheng-xu-she-ji-guan-fang-wen-dang/"/>
+    <link href="http://passol1988.github.io/blog/2014/10/29/kvccheng-xu-she-ji-guan-fang-wen-dang/"/>
     <updated>2014-10-29T22:08:26+08:00</updated>
-    <id>http://passol.tk/blog/2014/10/29/kvccheng-xu-she-ji-guan-fang-wen-dang</id>
+    <id>http://passol1988.github.io/blog/2014/10/29/kvccheng-xu-she-ji-guan-fang-wen-dang</id>
     <content type="html"><![CDATA[<h1>KVC的定义</h1>
 
 <p>该文档主要介绍<code>NSKeyValueCoding</code>协议,他实现了一种允许调用对象属性的名称(或键)的机制,而不是直接调用setter或者getter方法或者实例变量
