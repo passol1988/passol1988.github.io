@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: block,ios | Xblog]]></title>
+  <link href="http://passol.tk/blog/categories/block-ios/atom.xml" rel="self"/>
+  <link href="http://passol.tk/"/>
+  <updated>2015-09-03T21:56:22+08:00</updated>
+  <id>http://passol.tk/</id>
+  <author>
+    <name><![CDATA[passol]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[理解block]]></title>
+    <link href="http://passol.tk/blog/2014/10/24/li-jie-block/"/>
+    <updated>2014-10-24T00:00:35+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/24/li-jie-block</id>
+    <content type="html"><![CDATA[<h2>引言</h2>
+
+<p>Blocks非常方便使用,在使用中通常使用以下方式:</p>
+
+<pre><code class="objc">
+    __weak __typeof__(self) weakSelf = self;
+    self.block = ^{
+        __typeof__(self) strongSelf = weakSelf;
+        [strongSelf doSomething];//片段1
+        [strongSelf doSomethingElse];//片段2
+    };
+</code></pre>
+
+<h2>block运行机制</h2>
+
+<ul>
+<li>block创建在栈上,当栈帧返回的时候释放.在栈中的时候,block不会对使用的任何对象保留或者释放.</li>
+<li>但当栈帧返回时候热然需要使用block的时候,我们会复制block到堆里(这是显式行为).Block会在整个作用域保留所有的使用对象.</li>
+<li><p>block可以包含代码段,同时也要在生命周期保存状态.具体来讲,Block保留括号内所有变量.所以使用<code>__weak</code>避免重复包含.</p></li>
+<li><p>当代码执行时,有可能出现片段1成功执行,片段2不执行(因为self可能为<em>nil</em>)</p></li>
+<li>在block执行时创建指向self的强引用,然后保留对象</li>
+<li>实践来讲,最好创建指向weakSelf的强引用.他不会引起<strong>retain cycle</strong>因为强引用只存在于block执行期间,所以使用<code>__strong</code></li>
+</ul>
+
+
+<h2>block一定不能retain self么</h2>
+
+<p>也不一定,当其他对象的block引用self,虽然也会保存状态,但是不会引起<strong>retain cycle</strong></p>
+
+<h2>拓展</h2>
+
+<p>上述方式虽然好,不过不够简洁.幸好有<a href="https://github.com/jspahrsummers/libextobjc">libextobjc</a>提供了<strong>@weakify()</strong>和<strong>@strongify()</strong>.上述代码可以精简成:</p>
+
+<pre><code class="objc">
+    @weakify(self);
+    self.block = ^{
+        @strongify(self);
+        [self doSomething];//片段1
+        [self doSomethingElse];//片段2
+    };  
+</code></pre>
+
+<h2>更多资料</h2>
+
+<ol>
+<li><a href="http://www.fantageek.com/1090/understanding-weak-self-and-strong-self/">http://www.fantageek.com/1090/understanding-weak-self-and-strong-self/</a></li>
+<li><a href="http://aceontech.com/objc/ios/2014/01/10/weakify-a-more-elegant-solution-to-weakself.html">http://aceontech.com/objc/ios/2014/01/10/weakify-a-more-elegant-solution-to-weakself.html</a></li>
+<li><a href="http://www.idryman.org/blog/2012/11/22/arc-best-practices-and-pitfalls/">http://www.idryman.org/blog/2012/11/22/arc-best-practices-and-pitfalls/</a>(内容详实)</li>
+<li><a href="http://dhoerl.wordpress.com/2013/04/23/i-finally-figured-out-weakself-and-strongself/">http://dhoerl.wordpress.com/2013/04/23/i-finally-figured-out-weakself-and-strongself/</a></li>
+<li><a href="http://stackoverflow.com/questions/19018456/ios-blocks-and-strong-weak-references-to-self">http://stackoverflow.com/questions/19018456/ios-blocks-and-strong-weak-references-to-self</a></li>
+<li><a href="http://blackpixel.com/blog/2014/03/capturing-myself.html">http://blackpixel.com/blog/2014/03/capturing-myself.html</a>(我尚未看)</li>
+<li><a href="http://albertodebortoli.github.io/blog/2013/08/03/objective-c-blocks-caveat/">http://albertodebortoli.github.io/blog/2013/08/03/objective-c-blocks-caveat/</a></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

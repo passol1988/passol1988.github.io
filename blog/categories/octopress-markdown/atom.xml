@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: octopress,markdown | Xblog]]></title>
+  <link href="http://passol.tk/blog/categories/octopress-markdown/atom.xml" rel="self"/>
+  <link href="http://passol.tk/"/>
+  <updated>2015-09-03T21:56:22+08:00</updated>
+  <id>http://passol.tk/</id>
+  <author>
+    <name><![CDATA[passol]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[markdown语法学习]]></title>
+    <link href="http://passol.tk/blog/2014/10/21/markdownyu-fa-xue-xi/"/>
+    <updated>2014-10-21T23:36:54+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/21/markdownyu-fa-xue-xi</id>
+    <content type="html"><![CDATA[<h2>大纲</h2>
+
+<ul>
+<li>复习下markdown语法,呵呵</li>
+</ul>
+
+
+<h1>一级标题</h1>
+
+<h2>二级标题</h2>
+
+<h3>三级标题</h3>
+
+<ul>
+<li><strong>强调</strong>或者<strong>强调</strong></li>
+<li><em>斜体</em>还是<em>斜体</em></li>
+</ul>
+
+
+<blockquote><p>我是引用 &gt;&lt;</p></blockquote>
+
+<ul>
+<li>我邮箱 <a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#112;&#97;&#x73;&#115;&#111;&#x6c;&#64;&#49;&#54;&#51;&#46;&#99;&#111;&#x6d;">&#x70;&#x61;&#x73;&#115;&#111;&#108;&#x40;&#x31;&#54;&#x33;&#x2e;&#x63;&#111;&#109;</a></li>
+<li>链接可以 link <a href="http://passol.herokuapp.com">http://passol.herokuapp.com</a>, 也可以<a href="http://passol.herokuapp.com">链接</a></li>
+<li>也可以添加说明 <a href="http://passol.herokuapp.com" title="说明我">链接</a></li>
+<li>外部链接 <a href="http://passol.herokuapp.com">外部链接</a></li>
+</ul>
+
+
+<h4>图片</h4>
+
+<p><img src="http://smallerapp.com/favicon.ico" title="Title here" alt="Smaller icon" /> title是可选的</p>
+
+<p>A <img src="http://resizesafari.com/favicon.ico" title="Title" alt="Resize icon" /> reference style image.</p>
+
+<h4>内部代码块</h4>
+
+<p><code>关键字</code></p>
+
+<pre><code>关键代码
+</code></pre>
+
+<h4>有序列表</h4>
+
+<ol>
+<li>一</li>
+<li>二</li>
+<li>三</li>
+</ol>
+
+
+<h4>无序列表</h4>
+
+<ul>
+<li>呵呵</li>
+<li>呵呵</li>
+<li>呵呵呵</li>
+</ul>
+
+
+<h4>水平分割线</h4>
+
+<hr />
+
+<hr />
+
+<hr />
+
+<h4>脚注</h4>
+
+<p>这是一个脚注.<sup id="fnref:1"><a href="#fn:1" rel="footnote">1</a></sup></p>
+
+<h4>删除线</h4>
+
+<p><del>被删除</del></p>
+
+<h4>表格</h4>
+
+<p>A simple table looks like this:</p>
+
+<table>
+<thead>
+<tr>
+<th>First Header </th>
+<th> Second Header </th>
+<th> Third Header</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Content Cell </td>
+<td> Content Cell  </td>
+<td> Content Cell</td>
+</tr>
+<tr>
+<td>Content Cell </td>
+<td> Content Cell  </td>
+<td> Content Cell</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>If you wish, you can add a leading and tailing pipe to each line of the table:</p>
+
+<table>
+<thead>
+<tr>
+<th> First Header </th>
+<th> Second Header </th>
+<th> Third Header </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> Content Cell </td>
+<td> Content Cell  </td>
+<td> Content Cell </td>
+</tr>
+<tr>
+<td> Content Cell </td>
+<td> Content Cell  </td>
+<td> Content Cell </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Specify alignement for each column by adding colons to separator lines:</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">First Header </th>
+<th style="text-align:center;"> Second Header </th>
+<th style="text-align:right;"> Third Header</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">Left         </td>
+<td style="text-align:center;"> Center        </td>
+<td style="text-align:right;"> Right</td>
+</tr>
+<tr>
+<td style="text-align:left;">Left         </td>
+<td style="text-align:center;"> Center        </td>
+<td style="text-align:right;"> Right</td>
+</tr>
+</tbody>
+</table>
+
+
+<h4>代码分享</h4>
+
+<blockquote><pre><code class="[language] [title] [url] [link text]">code snippet
+</code></pre></blockquote>
+
+<ul>
+<li>简略设置</li>
+</ul>
+
+
+<pre><code>$ git clone git@github.com:imathis/octopress.git # fork octopress
+</code></pre>
+
+<ul>
+<li>附加信息</li>
+</ul>
+
+
+<pre><code class="objc HelloWorld http://passol.tk link">
+    NSLog(@"Hello world!");
+</code></pre>
+
+<ul>
+<li>嵌入gist</li>
+</ul>
+
+
+<p>{% gist 4321346 %}
+{% gist 4321346 gistfile1.diff %}</p>
+
+<ul>
+<li>Example</li>
+</ul>
+
+
+<p>{% codeblock %}
+Awesome code snippet
+{% endcodeblock %}</p>
+
+<ul>
+<li>objc</li>
+</ul>
+
+
+<p>{% codeblock lang:objc %}
+[rectangle setX: 10 y: 10 width: 20 height: 20];
+{% endcodeblock %}</p>
+
+<p>更多参考资料</p>
+
+<ol>
+<li><a href="http://octopress.org/docs/blogging/code/">http://octopress.org/docs/blogging/code/</a></li>
+<li><a href="https://stackedit.io/editor">https://stackedit.io/editor</a></li>
+<li><a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#html">https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#html</a></li>
+<li><a href="http://ishowshao.com/blog/2013/10/15/octopress-with-qiniu/">http://ishowshao.com/blog/2013/10/15/octopress-with-qiniu/</a></li>
+<li><a href="http://blog.raphaelzhang.com/2012/03/lightweight-markup-markdown/">http://blog.raphaelzhang.com/2012/03/lightweight-markup-markdown/</a></li>
+<li><a href="http://octopress.org/docs/">http://octopress.org/docs/</a></li>
+<li><a href="http://www.jianshu.com/p/1e402922ee32">http://www.jianshu.com/p/1e402922ee32</a></li>
+<li><a href="http://www.jianshu.com/p/q81RER">http://www.jianshu.com/p/q81RER</a></li>
+</ol>
+
+<div class="footnotes">
+<hr/>
+<ol>
+<li id="fn:1">
+<p>脚注内容<a href="#fnref:1" rev="footnote">&#8617;</a></p></li>
+</ol>
+</div>
+
+]]></content>
+  </entry>
+  
+</feed>

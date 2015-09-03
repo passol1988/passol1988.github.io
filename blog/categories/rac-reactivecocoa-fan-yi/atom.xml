@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: rac,reactivecocoa,翻译 | Xblog]]></title>
+  <link href="http://passol.tk/blog/categories/rac-reactivecocoa-fan-yi/atom.xml" rel="self"/>
+  <link href="http://passol.tk/"/>
+  <updated>2015-09-03T21:56:22+08:00</updated>
+  <id>http://passol.tk/</id>
+  <author>
+    <name><![CDATA[passol]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[FRP in IOS翻译(5)]]></title>
+    <link href="http://passol.tk/blog/2014/10/24/frp-in-iosfan-yi-5/"/>
+    <updated>2014-10-24T03:04:09+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/24/frp-in-iosfan-yi-5</id>
+    <content type="html"><![CDATA[<h1>MVVM</h1>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[FRP in IOS翻译(4)]]></title>
+    <link href="http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-4/"/>
+    <updated>2014-10-23T01:23:06+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-4</id>
+    <content type="html"><![CDATA[<h1>RAC实践</h1>
+
+<p>作者举例<a href="https://github.com/AshFurrow/FunctionalReactivePixels">FunctionalReactivePixels</a></p>
+
+<h2>基本信息</h2>
+
+<ul>
+<li>分别创建<code>UICollectionViewController</code>的子类<code>FRPGalleryViewController</code>和<code>UICollectionViewFlowLayout</code>的子类<code>FRPGalleryFlowLayout</code></li>
+</ul>
+
+
+<pre><code class="objc init初始化">
+    - (id)init
+    {
+        FRPGalleryFlowLayout *flowLayout = [[FRPGalleryFlowLayout alloc] init];
+        self = [self initWithCollectionViewLayout:flowLayout];
+        if(!self) return nil;
+        return self;
+    }
+</code></pre>
+
+<p>&#8220;`objc 初始化<em>layout</em></p>
+
+<pre><code>- (instancetype)init {
+
+    if(!(self = [super init])) return nil;
+
+    self.itemSize = CGSizeMake(145, 145);
+    self.minimumInteritemSpacing = 10;
+    self.minimumLineSpacing = 10;
+    self.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
+
+    return self;
+}
+</code></pre>
+
+<pre><code>
+- 初始化`application: didFinishLaunchingWithOptions: `函数
+</code></pre>
+
+<pre><code>-(BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.rootViewController = [[UINavigationController alloc]            initWithRootViewController:[[FRPGalleryViewController alloc] init]];
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    return YES;
+}
+</code></pre>
+
+<pre><code>
+- 搭建model类`FRPPhotoModel`
+</code></pre>
+
+<pre><code>@interfaceFRPPhotoModel:NSObject
+
+@property(nonatomic,strong)NSString*photoName;
+@property(nonatomic,strong)NSNumber*identifier;
+@property(nonatomic,strong)NSString*photographerName;
+@property(nonatomic,strong)NSNumber*rating;
+@property(nonatomic,strong)NSString*thumbnailURL;
+@property(nonatomic,strong)NSData*thumbnailData;
+@property(nonatomic,strong)NSString*fullsizedURL;
+@property(nonatomic,strong)NSData*fullsizedData;
+
+@end
+</code></pre>
+
+<pre><code>
+- 和传统的用VC直接控制model.我们将抽象的逻辑放在另一个类中`FRPPhotoImporter`
+</code></pre>
+
+<pre><code>    @interfaceFRPPhotoImporter:NSObject
++ (RACSignal *)importPhotos;
+@end
+</code></pre>
+
+<pre><code>
+图片引入函数`importPhotos`返回API结果的RAC信号.recommend against using RACSubjects,
+</code></pre>
+
+<pre><code>+(RACReplaySubject*)importPhotos{
+    RACReplaySubject *subject = [RACReplaySubject subject];
+
+    NSURLRequest *request = [self popularURLRequest];
+    [NSURLConnection        sendAsynchronousRequest:request        queue:[NSOperationQueue mainQueue]        completionHandler:^(NSURLResponse *response,            NSData *data, NSError *connectionError) {              if (data) {                 id results = [NSJSONSerialization                   JSONObjectWithData:data options:0 error:nil];                   [subject sendNext:[[[results[@"photos"] rac_sequence] map:                  ^id(NSDictionary *photoDictionary) {                        FRPPhotoModel *model = [FRPPhotoModel new];                     [self configurePhotoModel:model                             withDictionary:photoDictionary];                        [self downloadThumbnailForPhotoModel:model];                    return model; }] array]];                   [subject sendCompleted];                }               else {                  [subject sendError:connectionError];        } }];       return subject;
+}
+</code></pre>
+
+<pre><code>
+首先,创建`RACReplaySubject`实例.然后,创建异步请求获取照片对象,再立刻返回信号.
+当从API获取数据后,回调马上调用,所有订阅者都能收到值
+
+`RACSubject`和子类`RACReplaySubject`区别在于:
+replay保证主要对象只被订阅一次,防止了重复工作(尤其对于网络活动尤为重要).同时,replay对象会存储值并转发到新的订阅者,正如Justin Spahr指出的那样,也能有效防止竞争者状态.
+
+我们是直接发送完成信号而不是发送随着时间变化的流,如果要联合其他操作这就显得有点过度反应.不过,这有助于标志完成一段任务.如果想看更高级的联合,可以看看[octokit](https://github.com/octokit/octokit.objc)
+
+我们只检测是否有数据返回,虽然这不是最好的方式判断是否有数据,但可以作为教学例子.如果返回数据为nil,发送error信号.否则,解析json.
+
+我们将结果的*photo*放入序列中,映射,再转回数组.model的数组就是要传递的值,最后发送completed信号.
+</code></pre>
+
+<pre><code>+(void)configurePhotoModel:(FRPPhotoModel*)photoModelwithDictionary:(NSDictiona\ ry*)dictionary{
+// Basics details fetched with the first, basic request    photoModel.photoName = dictionary[@"name"];    photoModel.identifier = dictionary[@"id"];    photoModel.photographerName = dictionary[@"user"][@"username"];    photoModel.rating = dictionary[@"rating"];
+photoModel.thumbnailURL = [self urlForImageSize:3 inArray:dictionary[@"images"]];
+
+// Extended attributes fetched with subsequent request
+if (dictionary[@"comments_count"]) {
+    photoModel.fullsizedURL = [self urlForImageSize:4                                   inArray:dictionary[@"images"]];
+}
+
+}
+</code></pre>
+
+<pre><code></code></pre>
+
+<pre><code>    +(NSString*)urlForImageSize:(NSInteger)size inDictionary:(NSArray*)array{
+    return [[[[[array rac_sequence] filter:^BOOL(NSDictionary *value) {
+        return [value[@"size"] integerValue] == size;
+    }] map:^id(id value) { 
+        return value[@"url"];       }] array] firstObject];
+}
+</code></pre>
+
+<pre><code></code></pre>
+
+<pre><code>+(void)downloadThumbnailForPhotoModel:(FRPPhotoModel*)photoModel{
+    NSAssert(photoModel.thumbnailURL, @"Thumbnail URL must not be nil");
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:pho\      toModel.thumbnailURL]];
+    [NSURLConnection sendAsynchronousRequest:request
+        queue:[NSOperationQueue mainQueue]
+        completionHandler:^(NSURLResponse *response,            NSData *data, NSError *connectionError) {        photoModel.thumbnailData = data;       }];
+
+}
+</code></pre>
+
+<pre><code></code></pre>
+
+<pre><code>@interface FRPGalleryViewController()
+@property(nonatomic,strong)NSArray*photosArray;
+@end
+</code></pre>
+
+<pre><code></code></pre>
+
+<pre><code>static NSString*CellIdentifier=@"Cell";
+-(void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    // Configure self
+    self.title = @"Popular on 500px";       // Configure view
+    [self.collectionView registerClass:[FRPCell class]
+        forCellWithReuseIdentifier:CellIdentifier];     // Reactive Stuff
+    @weakify(self);
+    [RACObserve(self, photosArray) subscribeNext:^(id x) {
+        @strongify(self);
+        [self.collectionView reloadData];
+    }
+
+    // Load data        [self loadPopularPhotos];
+
+}
+</code></pre>
+
+<pre><code>
+`RACObserver`是一个带有两个参数的C宏:对象和对象的KeyPath,当key path的值发生变化他返回信号.释放*self*的时候返回completed信号.当属性*photosArray*发生变化collectionView重新加载.
+
+基本上,`subscribeNext:`会保留self.引起self和block的**retain cycle**.block被`subscribeNext:`的返回值-`RACSubscriber`实例保留,接着又被`RACObserver`保留.一旦释放self,`RACObserver`会自动释放.没有**weakify/strongify**,self不会被释放掉
+</code></pre>
+
+<pre><code>-(void)loadPopularPhotos {
+    [[FRPPhotoImporter importPhotos] subscribeNext:^(id x) {
+        self.photosArray = x;
+    } error:^(NSError *error) {
+        NSLog(@"Couldn't fetch photos from 500px: %@",error);
+    }];
+}
+</code></pre>
+
+<p>&#8220;`</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[FRP in IOS翻译(3)]]></title>
+    <link href="http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-3/"/>
+    <updated>2014-10-23T01:23:00+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-3</id>
+    <content type="html"><![CDATA[<h1>介绍ReactiveCocoa</h1>
+
+<h2>安装ReactiveCocoa</h2>
+
+<p>ReactiveCocoa并不官方支持Cocoapods,但是开源社区支持.你也可以使用checkout submodule的方式
+编写的podFile如下:
+<code>
+platform :ios "6.0"
+target "Playground" do
+pod 'ReactiveCocoa', ' 2.1.4'
+end
+target "PlaygroundTests" do
+pod 'ReactiveCocoa', 2.1.4
+end
+</code></p>
+
+<h2>流和序列</h2>
+
+<ul>
+<li>流是一连串值的抽象.你可以把流当成管道,值像流水一样从一端进入,另一端出来.不能取得<strong>过去</strong>的值,即使要得到<strong>现在</strong>的值,也必须是值刚从管道出来的时候.</li>
+<li>一连串值有点像list或者数组,可以使用<strong>rac_sequence</strong>方法把NSArray转化成流
+<code>
+NSArray *array = @[@(1), @(2), @(3)];
+RACSequence *stream = [array rac_sequence];
+</code>
+<em>RACSequence</em>就是<em>RACStream</em>的子类</li>
+<li>转化成流后,我们可以使用操作流</li>
+<li>map
+<code>
+[stream map:^id(id value) {
+ return @(pow([value integerValue], 2));
+}]
+</code>
+<em>类似于array, 流不能包含nil</em></li>
+<li>转换回array
+<code>
+NSLog(@"%@", [stream array]);
+</code></li>
+<li>联合1.2结果
+<code>
+NSLog(@"%@", [[[array rac_sequence] map:^id(id value) {
+ return @(pow([value integerValue], 2));
+}] array]);
+</code>
+<strong>sequence</strong>默认是懒惰加载(在用的时候才加载),pull-driven,在被要求的时候才提供值.
+<em>filter</em>的例子
+<code>
+NSLog(@"%@", [[[array rac_sequence] filter:^BOOL(id value) {
+ return [value integerValue]%2 == 0;
+}]])
+</code>
+<em>fold</em>的例子:
+<code>
+NSLog(@"%@", [[[array rac_sequence] map:^id(id value) {
+ return [value stringValue];
+}] foldLeftWithStart:@"" reduce:^id(id accumulator, id value) {
+ return [accumulator stringByAppendingString:value];
+}])
+</code></li>
+<li>在这个例子中.我们组合了两个操作，也是下一节要学的<em>signal</em>.</li>
+<li>RAC有left fold和right fold, 分别是从左到右和从右到左</li>
+</ul>
+
+
+<h2>信号</h2>
+
+<ul>
+<li>信号是另一种流,它是push-driven,新的值推进管道而不能拉出来.他们抽象出数据以便将来使用.</li>
+<li>信号发送三种类型的数据.<em>next</em>送往管道,<em>error</em>代表信号不能顺利完成,<em>completion</em>代表顺利完成.<em>error</em>和<em>completion</em>是互斥的.</li>
+<li>信号是RAC核心控件,有很多为UIKit内置的处理函数.<em>UITextField</em>有<em>rac_textSignal</em>方法处理textfield里新的值</li>
+</ul>
+
+
+<h2>订阅</h2>
+
+<ul>
+<li>订阅一般针对信号,用作通知新值被传递(next, error或者completion).信号用作以下场景会有副作用(在<em>viewDidLoad</em>中的代码):
+<code>
+[self.textField.rac_textSignal subscribeNext:^(id x) {
+  NSLog(@"New value:%@", x);
+} error:^(NSError *error){
+  NSLog(@"Error%@", error);
+} completed: ^{
+  NSLog(@"completed");
+}]
+</code></li>
+<li>Textfield从不传递error值,只在dealloc的时候才传递completion值,所以这两个block几乎不调用.我们可以简化以上结果:
+<code>
+[self.textField.rac_textSignal subscribeNext:^(id x) {
+  NSLog(@"New value %@", x);
+}];
+</code></li>
+<li>当你订阅信号,其实是建立了一个订阅的对象,自动被retain,并且retain信号,你可以手动dispose这个订阅者(不是典型用法).</li>
+</ul>
+
+
+<h2>生成状态</h2>
+
+<ul>
+<li>传统的做法是用类的一个属性标记状态变化,但是RAC抽象这个属性到流里,举例:
+在textfield中,只要email输入框包含<em>@</em>,只有有效的用户才能促发button enable,或者可以让textField变色提供反馈
+<code>
+RAC(self.button, enabled) = [self.textField.tac_textSignal map:^id(NSString *value){
+  return @([value rangeOfString:@"@"].location != NSNotFound);
+}]
+</code></li>
+<li>RAC宏有两个参数:对象和对象的属性.它提供单向绑定右边的值和对象的属性.值必须是对象.
+下面修改textField的颜色:
+`
+RACSignal <em>validEmailSignal = [self.textField.rac_textSignal map:^id(NSString </em>value) {
+  return @([value rangeOfString:@&ldquo;@&rdquo;].location != NSNotFound);
+}]</li>
+</ul>
+
+
+<p>RAC(self.button, enabled) = validEmailSignal;
+RAC(self.textField, textColor) = [validEmailSignal map:^id(id value) {
+    if([value boolVaue]){
+        return [UIColor greenColor];
+    }else{
+        return [UIColor redColor];
+    }
+}]
+`</p>
+
+<h2>命令</h2>
+
+<ul>
+<li>上面例子中UIButton可以使用enabled属性是因为RAC的类别扩展了UIButton的属性,可以直接使用button的<em>rac_command</em>直接扩展
+
+<blockquote><p><em>command</em>可以创造和订阅信号的行为,很容易实现单边效果.通常来说,行为是UI触发的.信号也可以disable命令</p></blockquote></li>
+<li>命令主要用作响应用户交互时间,在处理命令的时候可以订阅命令的信号(稍后解释)
+<code>
+self.button.rac_command = [[RACCommand alloc] initWithEnabled:validEmailSingal singalBlock:^RACSignal *(id input){
+  NSLog(@"button was pressed");
+  return [RACSignal empty];
+}]
+</code></li>
+<li>当按下button的时候signal执行了,<em>rac_command</em>处理绑定信号和enable状态</li>
+<li>返回值,我们需要返回一个signal给属于RACCommand的executionSignals管道,直到信号返回完整的值button才会enable.</li>
+</ul>
+
+
+<h2>RACSubject</h2>
+
+<ul>
+<li><strong>RACSubject</strong>是代表一种可变的状态,你可以设置新的值.所以总是被用作特殊用途.</li>
+</ul>
+
+
+<h2>冷热信号</h2>
+
+<ul>
+<li>信号是lazy的,总是在使用时生成和传递.重复订阅代表重复使用.这种就叫<em>冷信号</em></li>
+<li><em>热信号</em>是即时生成和使用,很少用到</li>
+</ul>
+
+
+<h2>多播</h2>
+
+<ul>
+<li>多播主要用作多个对象共享订阅一个信号,不太可能重复发送同样的信号,因为可能订阅非常耗资源.例如网络请求</li>
+<li><strong>RACMulticastConnection</strong>可以发布RACSignal或者多播,后者可以带上RACSubject参数</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[FRP in IOS翻译(2)]]></title>
+    <link href="http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-2/"/>
+    <updated>2014-10-23T01:22:57+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi-2</id>
+    <content type="html"><![CDATA[<h1>使用<em>RXCollections</em>函数式编程</h1>
+
+<h2>高阶函数</h2>
+
+<ul>
+<li>使用一个或多个函数当输入</li>
+<li>输出一个函数
+在OC中使用Block,例如:
+遍历函数
+<code>
+NSArray *array = @[@(1), @(2), @(3)]
+</code>
+我们可以:
+<code>
+for (NSNumber *number in array){
+  NSLog(@"%@", number);
+}
+</code>
+也可以
+<code>
+[array enumerateObjectsUsingBlock:^(NSNumber *number, NSUInteger idx, BOOL *stop)]{
+  NSLog(@"%@", number);
+}
+</code>
+高阶函数就是函数体,我们可以使用<strong>RXCollections</strong></li>
+</ul>
+
+
+<h2>安装RXCollections</h2>
+
+<p><code>
+sudo gem install cocoapods
+pod init
+</code>
+编写podfile:
+<code>
+platform :ios, "6.0"
+target "Playground" do
+pod "RXCollections", "1.0"
+end
+target "PlaygroundTests" do
+end
+</code>
+然后:
+<code>
+pod install
+</code></p>
+
+<p>接着用上面的例子
+<code>
+NSArray *array = @[@(1), @(2), @(3)]
+</code></p>
+
+<h2>Map</h2>
+
+<p><code>
+NSArray *mappedArray = [array rx_mapWithBlock:^id(id each) {
+    return @(pow([each integerValue], 2));
+}]
+</code>
+结果编程 (1, 4, 9)
+特点:
+1. 没有修改原值
+2. 生成的也是个不可变的数组</p>
+
+<h2>Filter</h2>
+
+<p><code>
+NSArray *filteredArray = [array rx_filterWithBlock: ^BOOL(id each){
+    return ([each integerValue] % 2 == 0);
+}]
+</code></p>
+
+<h2>Fold(其实就是求和)</h2>
+
+<p><code>
+NSNumber *sum = [array rx_foldWithBlock:^id(id memo, id each){
+    return @([memo integerValue] + [each integerValue]);
+}]
+</code>
+数组的每一个成员就是一个sequence, memo就是上一次调用block的返回值(初始为nil)
+我们可以这么做:
+<code>
+[[array rx_mapWithBlock:^id(id each) {
+    return [each stringValue];
+}] rx_foldInitialValue:@"" block:^id(id memo, id each) {
+    return [memo stringByAppendString:each];
+}];
+</code>
+确实更消耗性能不过iphone不怕,硬件不再是短板</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[FRP in IOS翻译(1)]]></title>
+    <link href="http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi/"/>
+    <updated>2014-10-23T01:21:19+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/23/frp-in-iosfan-yi</id>
+    <content type="html"><![CDATA[<h1>哲学</h1>
+
+<ul>
+<li><strong>函数响应式编程</strong>可以让程序员更lazy,但同时需要花时间来学习.</li>
+<li>传统的<strong>交互式编程</strong>依赖于程序员了解整个流程:不停修改程序的状态,而且是特定的顺序才能保证程序的正确性</li>
+<li><strong>声明式编程</strong>尽量减少流程控制，而是集中精力在达到的目标上</li>
+</ul>
+
+
+<h2>函数式响应编程</h2>
+
+<ul>
+<li><strong>响应式编程</strong>类似于电子表格,如果定义cell A是B和C的和,当B或者C的值发生变化,A总能随着变化</li>
+<li><strong>函数式编程</strong>就是函数体(在ios下就是block),没有可变的状态,同样的输入一定有同样的输出.</li>
+</ul>
+
+
+<h2>结论</h2>
+
+<ul>
+<li>函数响应式效率更高</li>
+<li>声明式编程可以规避必须清楚整个流程</li>
+<li>函数响应式式两者的结合</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

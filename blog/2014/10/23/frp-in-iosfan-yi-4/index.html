@@ -1,0 +1,510 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>FRP in IOS翻译(4) - Xblog</title>
+	<meta name="author" content="passol">
+
+	
+	<meta name="description" content="RAC实践 作者举例FunctionalReactivePixels 基本信息 分别创建UICollectionViewController的子类FRPGalleryViewController和UICollectionViewFlowLayout的子类FRPGalleryFlowLayout &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Xblog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.png" rel="shortcut icon">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	<script async="true" src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	
+</head>
+
+
+<body>
+	<header id="header" class="inner"><h1><a href="/">Xblog</a></h1>
+<nav id="main-nav"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+<nav id="mobile-nav">
+	<div class="alignleft menu">
+		<a class="button">Menu</a>
+		<div class="container"><ul class="main">
+	<li><a href="/">Blog</a></li>
+	<li><a href="/blog/archives">Archives</a></li>
+</ul>
+</div>
+	</div>
+	<div class="alignright search">
+		<a class="button"></a>
+		<div class="container">
+			<form action="https://www.google.com.tw/search" method="get">
+				<input type="text" name="q" results="0">
+				<input type="hidden" name="q" value="site:passol.tk">
+			</form>
+		</div>
+	</div>
+</nav>
+<nav id="sub-nav" class="alignright">
+	<div class="social">
+		
+		
+		
+		<a class="twitter" href="http://twitter.com/passol1988" title="Twitter">Twitter</a>
+		
+		
+		<a class="github" href="https://github.com/passol1988" title="GitHub">GitHub</a>
+		
+    
+		
+		
+		
+		
+		
+		<a class="rss" href="/atom.xml" title="RSS">RSS</a>
+		
+    
+	</div>
+	<form class="search" action="https://www.google.com.tw/search" method="get">
+		<input class="alignright" type="text" name="q" results="0">
+		<input type="hidden" name="q" value="site:passol.tk">
+	</form>
+</nav>
+
+</header>
+	
+		
+	
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">FRP in IOS翻译(4)</h2>
+	<div class="entry-content"><h1>RAC实践</h1>
+
+<p>作者举例<a href="https://github.com/AshFurrow/FunctionalReactivePixels">FunctionalReactivePixels</a></p>
+
+<h2>基本信息</h2>
+
+<ul>
+<li>分别创建<code>UICollectionViewController</code>的子类<code>FRPGalleryViewController</code>和<code>UICollectionViewFlowLayout</code>的子类<code>FRPGalleryFlowLayout</code></li>
+</ul>
+
+
+<figure class='code'><figcaption><span>init初始化</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="o">-</span> <span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="n">init</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="n">FRPGalleryFlowLayout</span> <span class="o">*</span><span class="n">flowLayout</span> <span class="o">=</span> <span class="p">[[</span><span class="n">FRPGalleryFlowLayout</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">];</span>
+</span><span class='line'>      <span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">initWithCollectionViewLayout</span><span class="p">:</span><span class="n">flowLayout</span><span class="p">];</span>
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nb">self</span><span class="p">)</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>初始化*layout*</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="o">-</span> <span class="p">(</span><span class="kt">instancetype</span><span class="p">)</span><span class="n">init</span> <span class="p">{</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nb">self</span> <span class="o">=</span> <span class="p">[</span><span class="nb">super</span> <span class="n">init</span><span class="p">]))</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="nb">self</span><span class="p">.</span><span class="n">itemSize</span> <span class="o">=</span> <span class="n">CGSizeMake</span><span class="p">(</span><span class="mi">145</span><span class="p">,</span> <span class="mi">145</span><span class="p">);</span>
+</span><span class='line'>      <span class="nb">self</span><span class="p">.</span><span class="n">minimumInteritemSpacing</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>      <span class="nb">self</span><span class="p">.</span><span class="n">minimumLineSpacing</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span><span class='line'>      <span class="nb">self</span><span class="p">.</span><span class="n">sectionInset</span> <span class="o">=</span> <span class="n">UIEdgeInsetsMake</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="k">return</span> <span class="nb">self</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>初始化<code>application: didFinishLaunchingWithOptions:</code>函数</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>系统委托函数</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">application:</span><span class="p">(</span><span class="bp">UIApplication</span><span class="o">*</span><span class="p">)</span><span class="nv">application</span> <span class="nf">didFinishLaunchingWithOptions:</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="nv">launchOptions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UIWindow</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithFrame</span><span class="p">:[[</span><span class="bp">UIScreen</span> <span class="n">mainScreen</span><span class="p">]</span> <span class="n">bounds</span><span class="p">]];</span>
+</span><span class='line'>  <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">UINavigationController</span> <span class="n">alloc</span><span class="p">]</span>            <span class="nl">initWithRootViewController</span><span class="p">:[[</span><span class="n">FRPGalleryViewController</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">]];</span>
+</span><span class='line'>  <span class="nb">self</span><span class="p">.</span><span class="n">window</span><span class="p">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIColor</span> <span class="n">whiteColor</span><span class="p">];</span>
+</span><span class='line'>  <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">window</span> <span class="n">makeKeyAndVisible</span><span class="p">];</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nb">YES</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>搭建model类<code>FRPPhotoModel</code></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="p">@</span><span class="nl">interfaceFRPPhotoModel</span><span class="p">:</span><span class="bp">NSObject</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="k">@property</span><span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span><span class="k">strong</span><span class="p">)</span><span class="bp">NSString</span><span class="o">*</span><span class="n">photoName</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">@property</span><span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span><span class="k">strong</span><span class="p">)</span><span class="bp">NSNumber</span><span class="o">*</span><span class="n">identifier</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">@property</span><span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span><span class="k">strong</span><span class="p">)</span><span class="bp">NSString</span><span class="o">*</span><span class="n">photographerName</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">@property</span><span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span><span class="k">strong</span><span class="p">)</span><span class="bp">NSNumber</span><span class="o">*</span><span class="n">rating</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">@property</span><span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span><span class="k">strong</span><span class="p">)</span><span class="bp">NSString</span><span class="o">*</span><span class="n">thumbnailURL</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">@property</span><span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span><span class="k">strong</span><span class="p">)</span><span class="bp">NSData</span><span class="o">*</span><span class="n">thumbnailData</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">@property</span><span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span><span class="k">strong</span><span class="p">)</span><span class="bp">NSString</span><span class="o">*</span><span class="n">fullsizedURL</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">@property</span><span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span><span class="k">strong</span><span class="p">)</span><span class="bp">NSData</span><span class="o">*</span><span class="n">fullsizedData</span><span class="p">;</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="k">@end</span>
+</span><span class='line'>  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>和传统的用VC直接控制model.我们将抽象的逻辑放在另一个类中<code>FRPPhotoImporter</code></li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="p">@</span><span class="nl">interfaceFRPPhotoImporter</span><span class="p">:</span><span class="bp">NSObject</span>
+</span><span class='line'><span class="o">+</span> <span class="p">(</span><span class="n">RACSignal</span> <span class="o">*</span><span class="p">)</span><span class="n">importPhotos</span><span class="p">;</span>
+</span><span class='line'><span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>图片引入函数<code>importPhotos</code>返回API结果的RAC信号.recommend against using RACSubjects,</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="o">+</span><span class="p">(</span><span class="n">RACReplaySubject</span><span class="o">*</span><span class="p">)</span><span class="n">importPhotos</span><span class="p">{</span>
+</span><span class='line'>      <span class="n">RACReplaySubject</span> <span class="o">*</span><span class="n">subject</span> <span class="o">=</span> <span class="p">[</span><span class="n">RACReplaySubject</span> <span class="n">subject</span><span class="p">];</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="bp">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="n">popularURLRequest</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">[</span><span class="bp">NSURLConnection</span>
+</span><span class='line'>        <span class="nl">sendAsynchronousRequest</span><span class="p">:</span><span class="n">request</span>
+</span><span class='line'>        <span class="nl">queue</span><span class="p">:[</span><span class="bp">NSOperationQueue</span> <span class="n">mainQueue</span><span class="p">]</span>
+</span><span class='line'>        <span class="nl">completionHandler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span>
+</span><span class='line'>            <span class="bp">NSData</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">*</span><span class="n">connectionError</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>              <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                  <span class="kt">id</span> <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSJSONSerialization</span>
+</span><span class='line'>                  <span class="nl">JSONObjectWithData</span><span class="p">:</span><span class="n">data</span> <span class="nl">options</span><span class="p">:</span><span class="mi">0</span> <span class="nl">error</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+</span><span class='line'>                  <span class="p">[</span><span class="n">subject</span> <span class="nl">sendNext</span><span class="p">:[[[</span><span class="n">results</span><span class="p">[</span><span class="s">@&quot;photos&quot;</span><span class="p">]</span> <span class="n">rac_sequence</span><span class="p">]</span> <span class="nl">map</span><span class="p">:</span>                  <span class="o">^</span><span class="kt">id</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="n">photoDictionary</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                      <span class="n">FRPPhotoModel</span> <span class="o">*</span><span class="n">model</span> <span class="o">=</span> <span class="p">[</span><span class="n">FRPPhotoModel</span> <span class="n">new</span><span class="p">];</span>
+</span><span class='line'>                      <span class="p">[</span><span class="nb">self</span> <span class="nl">configurePhotoModel</span><span class="p">:</span><span class="n">model</span>
+</span><span class='line'>                              <span class="nl">withDictionary</span><span class="p">:</span><span class="n">photoDictionary</span><span class="p">];</span>
+</span><span class='line'>                      <span class="p">[</span><span class="nb">self</span> <span class="nl">downloadThumbnailForPhotoModel</span><span class="p">:</span><span class="n">model</span><span class="p">];</span>
+</span><span class='line'>                  <span class="k">return</span> <span class="n">model</span><span class="p">;</span> <span class="p">}]</span> <span class="n">array</span><span class="p">]];</span>
+</span><span class='line'>                  <span class="p">[</span><span class="n">subject</span> <span class="n">sendCompleted</span><span class="p">];</span>
+</span><span class='line'>              <span class="p">}</span>
+</span><span class='line'>              <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>                  <span class="p">[</span><span class="n">subject</span> <span class="nl">sendError</span><span class="p">:</span><span class="n">connectionError</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">}</span> <span class="p">}];</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">return</span> <span class="n">subject</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>首先,创建<code>RACReplaySubject</code>实例.然后,创建异步请求获取照片对象,再立刻返回信号.
+当从API获取数据后,回调马上调用,所有订阅者都能收到值</p>
+
+<p><code>RACSubject</code>和子类<code>RACReplaySubject</code>区别在于:
+replay保证主要对象只被订阅一次,防止了重复工作(尤其对于网络活动尤为重要).同时,replay对象会存储值并转发到新的订阅者,正如Justin Spahr指出的那样,也能有效防止竞争者状态.</p>
+
+<p>我们是直接发送完成信号而不是发送随着时间变化的流,如果要联合其他操作这就显得有点过度反应.不过,这有助于标志完成一段任务.如果想看更高级的联合,可以看看<a href="https://github.com/octokit/octokit.objc">octokit</a></p>
+
+<p>我们只检测是否有数据返回,虽然这不是最好的方式判断是否有数据,但可以作为教学例子.如果返回数据为nil,发送error信号.否则,解析json.</p>
+
+<p>我们将结果的<em>photo</em>放入序列中,映射,再转回数组.model的数组就是要传递的值,最后发送completed信号.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="o">+</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">configurePhotoModel</span><span class="p">:(</span><span class="n">FRPPhotoModel</span><span class="o">*</span><span class="p">)</span><span class="nl">photoModelwithDictionary</span><span class="p">:(</span><span class="n">NSDictiona</span><span class="err">\</span> <span class="n">ry</span><span class="o">*</span><span class="p">)</span><span class="n">dictionary</span><span class="p">{</span>
+</span><span class='line'>  <span class="c1">// Basics details fetched with the first, basic request</span>
+</span><span class='line'>    <span class="n">photoModel</span><span class="p">.</span><span class="n">photoName</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s">@&quot;name&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">photoModel</span><span class="p">.</span><span class="n">identifier</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s">@&quot;id&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">photoModel</span><span class="p">.</span><span class="n">photographerName</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s">@&quot;user&quot;</span><span class="p">][</span><span class="s">@&quot;username&quot;</span><span class="p">];</span>
+</span><span class='line'>    <span class="n">photoModel</span><span class="p">.</span><span class="n">rating</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="s">@&quot;rating&quot;</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">photoModel</span><span class="p">.</span><span class="n">thumbnailURL</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">urlForImageSize</span><span class="p">:</span><span class="mi">3</span> <span class="nl">inArray</span><span class="p">:</span><span class="n">dictionary</span><span class="p">[</span><span class="s">@&quot;images&quot;</span><span class="p">]];</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="c1">// Extended attributes fetched with subsequent request</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">dictionary</span><span class="p">[</span><span class="s">@&quot;comments_count&quot;</span><span class="p">])</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">photoModel</span><span class="p">.</span><span class="n">fullsizedURL</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">urlForImageSize</span><span class="p">:</span><span class="mi">4</span>                                     <span class="nl">inArray</span><span class="p">:</span><span class="n">dictionary</span><span class="p">[</span><span class="s">@&quot;images&quot;</span><span class="p">]];</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="o">+</span><span class="p">(</span><span class="bp">NSString</span><span class="o">*</span><span class="p">)</span><span class="nl">urlForImageSize</span><span class="p">:(</span><span class="bp">NSInteger</span><span class="p">)</span><span class="n">size</span> <span class="nl">inDictionary</span><span class="p">:(</span><span class="bp">NSArray</span><span class="o">*</span><span class="p">)</span><span class="n">array</span><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="p">[[[[[</span><span class="n">array</span> <span class="n">rac_sequence</span><span class="p">]</span> <span class="nl">filter</span><span class="p">:</span><span class="o">^</span><span class="kt">BOOL</span><span class="p">(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="p">[</span><span class="n">value</span><span class="p">[</span><span class="s">@&quot;size&quot;</span><span class="p">]</span> <span class="n">integerValue</span><span class="p">]</span> <span class="o">==</span> <span class="n">size</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}]</span> <span class="nl">map</span><span class="p">:</span><span class="o">^</span><span class="kt">id</span><span class="p">(</span><span class="kt">id</span> <span class="n">value</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">value</span><span class="p">[</span><span class="s">@&quot;url&quot;</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">}]</span> <span class="n">array</span><span class="p">]</span> <span class="n">firstObject</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="o">+</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">downloadThumbnailForPhotoModel</span><span class="p">:(</span><span class="n">FRPPhotoModel</span><span class="o">*</span><span class="p">)</span><span class="n">photoModel</span><span class="p">{</span>
+</span><span class='line'>      <span class="n">NSAssert</span><span class="p">(</span><span class="n">photoModel</span><span class="p">.</span><span class="n">thumbnailURL</span><span class="p">,</span> <span class="s">@&quot;Thumbnail URL must not be nil&quot;</span><span class="p">);</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="bp">NSURLRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="bp">NSURLRequest</span> <span class="nl">requestWithURL</span><span class="p">:[</span><span class="bp">NSURL</span> <span class="nl">URLWithString</span><span class="p">:</span><span class="n">pho</span>\
+</span><span class='line'>      <span class="n">toModel</span><span class="p">.</span><span class="n">thumbnailURL</span><span class="p">]];</span>
+</span><span class='line'>      <span class="p">[</span><span class="bp">NSURLConnection</span> <span class="nl">sendAsynchronousRequest</span><span class="p">:</span><span class="n">request</span>
+</span><span class='line'>          <span class="nl">queue</span><span class="p">:[</span><span class="bp">NSOperationQueue</span> <span class="n">mainQueue</span><span class="p">]</span>
+</span><span class='line'>          <span class="nl">completionHandler</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSURLResponse</span> <span class="o">*</span><span class="n">response</span><span class="p">,</span>
+</span><span class='line'>            <span class="bp">NSData</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="bp">NSError</span> <span class="o">*</span><span class="n">connectionError</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">photoModel</span><span class="p">.</span><span class="n">thumbnailData</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+</span><span class='line'>      <span class="p">}];</span>
+</span><span class='line'>  
+</span><span class='line'>  <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="k">@interface</span> <span class="nc">FRPGalleryViewController</span><span class="p">()</span>
+</span><span class='line'>  <span class="k">@property</span><span class="p">(</span><span class="k">nonatomic</span><span class="p">,</span><span class="k">strong</span><span class="p">)</span><span class="bp">NSArray</span><span class="o">*</span><span class="n">photosArray</span><span class="p">;</span>
+</span><span class='line'>  <span class="k">@end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'> <span class="k">static</span> <span class="bp">NSString</span><span class="o">*</span><span class="n">CellIdentifier</span><span class="o">=</span><span class="s">@&quot;Cell&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="o">-</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">viewDidLoad</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="p">[</span><span class="nb">super</span> <span class="n">viewDidLoad</span><span class="p">];</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="c1">// Configure self</span>
+</span><span class='line'>      <span class="nb">self</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="s">@&quot;Popular on 500px&quot;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// Configure view</span>
+</span><span class='line'>      <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">collectionView</span> <span class="nl">registerClass</span><span class="p">:[</span><span class="n">FRPCell</span> <span class="k">class</span><span class="p">]</span>
+</span><span class='line'>          <span class="nl">forCellWithReuseIdentifier</span><span class="p">:</span><span class="n">CellIdentifier</span><span class="p">];</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="c1">// Reactive Stuff</span>
+</span><span class='line'>      <span class="p">@</span><span class="n">weakify</span><span class="p">(</span><span class="nb">self</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">[</span><span class="n">RACObserve</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">photosArray</span><span class="p">)</span> <span class="nl">subscribeNext</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>          <span class="p">@</span><span class="n">strongify</span><span class="p">(</span><span class="nb">self</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">collectionView</span> <span class="n">reloadData</span><span class="p">];</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      
+</span><span class='line'>      <span class="c1">// Load data</span>
+</span><span class='line'>      <span class="p">[</span><span class="nb">self</span> <span class="n">loadPopularPhotos</span><span class="p">];</span>
+</span><span class='line'>      
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>RACObserver</code>是一个带有两个参数的C宏:对象和对象的KeyPath,当key path的值发生变化他返回信号.释放<em>self</em>的时候返回completed信号.当属性<em>photosArray</em>发生变化collectionView重新加载.</p>
+
+<p>基本上,<code>subscribeNext:</code>会保留self.引起self和block的<strong>retain cycle</strong>.block被<code>subscribeNext:</code>的返回值-<code>RACSubscriber</code>实例保留,接着又被<code>RACObserver</code>保留.一旦释放self,<code>RACObserver</code>会自动释放.没有<strong>weakify/strongify</strong>,self不会被释放掉</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">-(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loadPopularPhotos</span> <span class="p">{</span>
+</span><span class='line'>  <span class="p">[[</span><span class="n">FRPPhotoImporter</span> <span class="n">importPhotos</span><span class="p">]</span> <span class="nl">subscribeNext</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nb">self</span><span class="p">.</span><span class="n">photosArray</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span> <span class="nl">error</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Couldn&#39;t fetch photos from 500px: %@&quot;</span><span class="p">,</span><span class="n">error</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-23T01:23:06+08:00" pubdate data-updated="true"></time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/rac-reactivecocoa-fan-yi/'>rac,reactivecocoa,翻译</a>
+
+
+</div>
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+		
+		<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+		
+		
+		<a class="addthis_button_tweet"></a>
+		
+		
+		
+	</div>
+	
+</div>
+
+
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2014
+
+    passol
+
+</footer>
+	<script src="/javascripts/slash.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+</body>
+</html>

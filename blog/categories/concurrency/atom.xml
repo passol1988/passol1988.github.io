@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: concurrency | Xblog]]></title>
+  <link href="http://passol.tk/blog/categories/concurrency/atom.xml" rel="self"/>
+  <link href="http://passol.tk/"/>
+  <updated>2015-09-03T21:56:22+08:00</updated>
+  <id>http://passol.tk/</id>
+  <author>
+    <name><![CDATA[passol]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[并发编程指南(官方文档)]]></title>
+    <link href="http://passol.tk/blog/2014/10/25/bing-fa-bian-cheng-zhi-nan-guan-fang-wen-dang/"/>
+    <updated>2014-10-25T05:26:11+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/25/bing-fa-bian-cheng-zhi-nan-guan-fang-wen-dang</id>
+    <content type="html"><![CDATA[<h1>并发与程序设计</h1>
+]]></content>
+  </entry>
+  
+</feed>

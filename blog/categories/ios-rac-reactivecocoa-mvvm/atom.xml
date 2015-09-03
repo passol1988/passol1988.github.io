@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ios,rac,reactivecocoa,mvvm | Xblog]]></title>
+  <link href="http://passol.tk/blog/categories/ios-rac-reactivecocoa-mvvm/atom.xml" rel="self"/>
+  <link href="http://passol.tk/"/>
+  <updated>2015-09-03T21:56:22+08:00</updated>
+  <id>http://passol.tk/</id>
+  <author>
+    <name><![CDATA[passol]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[用RAC使用MVVM教程(1)]]></title>
+    <link href="http://passol.tk/blog/2014/10/25/yong-racshi-yong-mvvmjiao-cheng-1/"/>
+    <updated>2014-10-25T02:38:33+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/25/yong-racshi-yong-mvvmjiao-cheng-1</id>
+    <content type="html"><![CDATA[<blockquote><p>所谓的IOS架构,MVC就代表重量级的VC  &ndash; <a href="https://twitter.com/Colin_Campbell/status/293167951132098560">Colin Campbell</a></p></blockquote>
+
+<p>本教程将讲述另一种架构APP的方式:MVVM.它搭配MVVM方式，提供了可替代MVC方式的完美方案</p>
+
+<h1>RAC简要介绍</h1>
+
+<ul>
+<li>RAC的核心就是信号,就是<code>RACSignal</code>类.信号可以发出事件流:<em>next</em>,<em>completed</em>和<em>error</em>
+在简单的场景中,rac可以取代代理模式.TA模式,和观察者模式等</li>
+<li>信号提供的API更容易使用和阅读,但是RAC更大的作用是能对信号做复杂的处理,满足实现要求.</li>
+<li>详情可以阅读<a href="http://www.raywenderlich.com/?p=62699">earlier tutorial series</a></li>
+</ul>
+
+
+<h1>MVVM简要介绍</h1>
+
+<p>MV*系列的模式(MVC或MVP等)核心在于分割UI逻辑和业务逻辑,让发开更方便.</p>
+
+<p>更多资料可以阅读<a href="http://www.raywenderlich.com/?p=46988">Eli</a>或<a href="http://www.objc.io/issue-13/mvvm.html">Ash Furrow</a>的文章</p>
+
+<p>MVC模型图大致如下:
+<img src="http://cdn4.raywenderlich.com/wp-content/uploads/2014/06/MVCPattern-2.png" title="MVC模式" alt="Smaller icon" />
+在MVC模式中,Model代表APP数据,View代表控件集合,而C则负责中间协调调度
+设计的初衷是好的,但是Controler往往变得逻辑复杂,代码多</p>
+
+<p>最近Martin Fowler提出了MVC的变种,也被微软采用了MVVM模式
+<img src="http://cdn5.raywenderlich.com/wp-content/uploads/2014/06/MVVMPattern.png" title="MVC模式" alt="Smaller icon" /></p>
+
+<p>这种模式的核心是ViewModel,特殊的Model专门表示UI状态,我们可以称之为View的model.基本规则是:
+1. View有一个引用到ViewModel,反之不一定.(简单来说,View总有一个VM可以管理他)
+2. ViewModel有一个引用指向Model,反之不一定
+这样的规定带来的好处有:
+1. 轻量级的Views,所有的UI逻辑都在ViewModel里面,View显得更轻量级
+2. 方便测试</p>
+
+<h1>MVVM和数据绑定</h1>
+
+<p>MVVM依赖于数据绑定,能自动关联对象属性到UI控件
+- 微软的<a href="">WPF</a>框架就提供了这种双向绑定</p>
+
+<pre><code>&lt;TextField Text=”{DataBinding Path=Username, Mode=TwoWay}”/&gt;
+</code></pre>
+
+<p>VM的<em>username</em>属性和<em>textField</em>的内容就绑定到一起</p>
+
+<ul>
+<li>Web端也提供了类似的框架<a href="http://knockoutjs.com/">Knockout</a></li>
+</ul>
+
+
+<pre><code>&lt;input data-bind=”value: username”/&gt;
+</code></pre>
+
+<p>实现HTML元素和JS Model的关联</p>
+
+<ul>
+<li>原生的IOS没有提供数据绑定的框架,而第三方库RAC就提供了这种功能
+<img src="http://cdn5.raywenderlich.com/wp-content/uploads/2014/06/MVVMReactiveCocoa.png" title="IOS 的MVVM类图" alt="" /></li>
+</ul>
+
+
+<p>这有篇文章专门介绍GUI架构,来自<a href="http://martinfowler.com/eaaDev/uiArchs.html">Martin Fowler</a></p>
+
+<h1>动手编程</h1>
+
+<p>下载启动文件<a href="http://cdn5.raywenderlich.com/wp-content/uploads/2014/06/FlickrSearchStarterProject1.zip">FlickrSearchStarterProject.zip</a></p>
+
+<p>我们使用<a href="http://www.raywenderlich.com/?p=64546">CocoaPods</a>管理库文件,只需要运行<code>pod install</code></p>
+]]></content>
+  </entry>
+  
+</feed>

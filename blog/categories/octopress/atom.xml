@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: octopress | Xblog]]></title>
+  <link href="http://passol.tk/blog/categories/octopress/atom.xml" rel="self"/>
+  <link href="http://passol.tk/"/>
+  <updated>2015-09-03T21:56:22+08:00</updated>
+  <id>http://passol.tk/</id>
+  <author>
+    <name><![CDATA[passol]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[部署octopress到heroku]]></title>
+    <link href="http://passol.tk/blog/2014/10/21/bu-shu-octopressdao-heroku/"/>
+    <updated>2014-10-21T23:15:19+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/21/bu-shu-octopressdao-heroku</id>
+    <content type="html"><![CDATA[<h2>下载octopress</h2>
+
+<pre><code>$ git clone git@github.com:imathis/octopress.git # fork octopress
+$ cd octopress
+</code></pre>
+
+<h2>ruby准备工作</h2>
+
+<pre><code>$ gem install bundler
+$ bundle install
+$ rake install
+</code></pre>
+
+<h2>发布</h2>
+
+<ul>
+<li>打开.gitignore文件,去掉<em>public</em>和<em>Gemfile.lock</em>,否则不能发布到heroku上面</li>
+</ul>
+
+
+<h2>可以指定域名</h2>
+
+<ul>
+<li>免费可以搜索下tk域名</li>
+</ul>
+
+
+<h2>定制配置(<em>_config.yml</em>)</h2>
+
+<pre><code>url: http://xblog.herokuapp.com
+title: First
+subtitle: heheh
+author: xblog
+</code></pre>
+
+<h2>添加博客</h2>
+
+<pre><code>$ rake new_post["title"]
+</code></pre>
+
+<h2>本地发布</h2>
+
+<pre><code>$ rake generate
+$ rake preview
+</code></pre>
+
+<p>直接浏览<a href="http://localhost:4000">http://localhost:4000</a>便可以看到</p>
+
+<h2>创建heroku app</h2>
+
+<pre><code>$ gem install heroku
+$ heroku create passol
+$ git add .
+$ git commit -m "first post"
+$ git push heroku master
+</code></pre>
+
+<h2>打开App</h2>
+
+<pre><code>$ heroku open
+</code></pre>
+
+<p>或者直接打开<a href="http://passol.herokuapp.com">http://passol.herokuapp.com</a></p>
+]]></content>
+  </entry>
+  
+</feed>

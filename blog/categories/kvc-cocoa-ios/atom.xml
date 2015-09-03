@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: kvc,cocoa,ios | Xblog]]></title>
+  <link href="http://passol.tk/blog/categories/kvc-cocoa-ios/atom.xml" rel="self"/>
+  <link href="http://passol.tk/"/>
+  <updated>2015-09-03T21:56:22+08:00</updated>
+  <id>http://passol.tk/</id>
+  <author>
+    <name><![CDATA[passol]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[KVC程序设计(官方文档)]]></title>
+    <link href="http://passol.tk/blog/2014/10/29/kvccheng-xu-she-ji-guan-fang-wen-dang/"/>
+    <updated>2014-10-29T22:08:26+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/29/kvccheng-xu-she-ji-guan-fang-wen-dang</id>
+    <content type="html"><![CDATA[<h1>KVC的定义</h1>
+
+<p>该文档主要介绍<code>NSKeyValueCoding</code>协议,他实现了一种允许调用对象属性的名称(或键)的机制,而不是直接调用setter或者getter方法或者实例变量
+实现KVC方法是重要的设计原则,有助于数据封装和配合kvo,CoreData,CocoaBinding等,甚至能简化代码</p>
+
+<h2>KVC和脚本</h2>
+
+<p>OSX主要依赖于KVC执行脚本命令,脚本内嵌的关键字也是KVC类型的API</p>
+
+<h2>利用KVC简化代码</h2>
+
+<pre><code class="objc 未使用KVC">
+    - (id)tableView:(NSTableView *)tableview objectValueForTableColumn:(id)column 
+                                                row:(NSInteger)row {
+        ChildObject *child = [childrenArray objectAtIndex:row];
+        if ([[column identifier] isEqualToString:@"name"]) {
+            return [child name];
+        }
+        if ([[column identifier] isEqualToString:@"age"]) {
+            return [child age];
+        }
+        if ([[column identifier] isEqualToString:@"favoriteColor"]) {
+            return [child favoriteColor];
+        }
+    }
+</code></pre>
+
+<pre><code class="objc 使用KVC">
+    - (id)tableView:(NSTableView *)tableview objectValueForTableColumn:(id)column
+                                             row:(NSInteger)row {
+        ChildObject *child = [childrenArray objectAtIndex:row];
+        return [child valueForKey:[column identifier]];
+    }
+</code></pre>
+
+<h1>基本术语</h1>
+
+<p>kvc主要用做取得三种类型的对象值(<em>property</em>):</p>
+
+<ol>
+<li><strong>attribute</strong>属性关系,比如NSNumber,NSColor</li>
+<li><strong>to-one relationship</strong>对一关系,通常是被所属关系,UIView的superView</li>
+<li><strong>to-many relationship</strong>对多关系,通常是所属的集合类属性,如NSArray或NSSet</li>
+</ol>
+
+
+<h1>KVC基础</h1>
+
+<h2>键和keyPaths</h2>
+
+<ol>
+<li>key必须是ASCII编码,小写字母开头,不能包含空格,如<em>payee</em></li>
+<li>key paths是用.隔开,遍历对象对最终的值,如 <em>address.street</em></li>
+</ol>
+
+
+<h2>KVC取值</h2>
+
+<ul>
+<li><code>valueForKey:</code>返回对象的对应的键值,如果没有方法或实例变量,receiver会发出<code>valueForUndefinedKey:</code>消息.而默认的<code>valueForUndefinedKey:</code>会抛出<code>NSUndefinedKeyException</code>异常</li>
+<li><code>valueForKeyPath:</code>也会抛出一样的异常</li>
+<li><code>dictionaryWithValuesForKeys:</code>返回对象所有的键关联的数组.返回的字典包含数组所有的键值</li>
+</ul>
+
+
+<h2>KVC赋值</h2>
+
+<ul>
+<li><code>setValue:forKey:</code>赋对象键值.默认的方法自动解封装<code>NSValue</code>对象.如果key不存在,对象默认发送<code>setValue:forUndefinedKey:</code>方法,抛出<code>NSUndefinedKeyException</code>异常</li>
+<li><code>setValue:forKeyPath:</code>也有类似的处理方式</li>
+<li><code>setValuesForKeysWithDictionary:</code>就是N个<code>setValue:forKey:</code>(必要是要用nil或者NSNull)</li>
+<li>还有种情况需要考虑,对象给不是对象的属性赋nil值,就会发出<code>setNilValueForKey:</code>消息,抛出<code>NSInvalidArgumentException</code>异常</li>
+</ul>
+
+
+<h2>.语法和KVC</h2>
+
+<pre><code class="objc">    @interface MyClass
+    @property NSString *stringProperty;
+    @property NSInteger integerProperty;
+    @property MyClass *linkedInstance;
+    @end
+</code></pre>
+
+<pre><code class="objc 直接用KVC修改">
+    MyClass *myInstance = [[MyClass alloc] init];
+    NSString *string = [myInstance valueForKey:@"stringProperty"];
+    [myInstance setValue:@2 forKey:@"integerProperty"];
+</code></pre>
+
+<pre><code class="objc .语法修改">
+    MyClass *anotherInstance = [[MyClass alloc] init];
+    myInstance.linkedInstance = anotherInstance;
+    myInstance.linkedInstance.integerProperty = 2;
+</code></pre>
+
+<pre><code class="objc 结合起来修改">
+    MyClass *anotherInstance = [[MyClass alloc] init];
+    myInstance.linkedInstance = anotherInstance;
+    [myInstance setValue:@2 forKeyPath:@"linkedInstance.integerProperty"];
+</code></pre>
+
+<h1>KVC赋/取方法常用方法:</h1>
+
+<ul>
+<li><code>valueForKey:</code>,</li>
+<li><code>setValue:forKey:</code>,</li>
+<li><code>mutableArrayValueForKey:</code>,</li>
+<li><code>mutableSetValueForKey:</code></li>
+</ul>
+
+
+<p>通用accessor方法
+- getter. -<key>
+- 第二种   -is<key>
+- setter, -set<key>:
+- 如果属性不是对象,你就必须在适当的时候手动赋给nil值</p>
+
+<p>针对<strong>to-many</strong>属性集合类型
+- 有序的accessor类型</p>
+
+<p>不可变</p>
+
+<ol>
+<li>countOf<key> 必须</li>
+<li><em>-objectIn<Key>AtIndex:</em> or <em>-<key>AtIndexes:</em> 必须实现一个.他对应<em>objectAtIndex:</em>和 <em>objectsAtIndexes:</em></li>
+<li>-get<Key>:range: 可选实现,返回NSArray.对应NSArray的<em>getObjects:range:</em></li>
+</ol>
+
+
+<p>可变</p>
+
+<ol>
+<li>-insertObject:in<Key>AtIndex: or -insert<Key>:atIndexes: 至少实现一个</li>
+<li>-removeObjectFrom<Key>AtIndex: or -remove<Key>AtIndexes: 至少实现一个</li>
+<li>-replaceObjectIn<Key>AtIndex:withObject: or -replace<Key>AtIndexes:with<Key>:可选</li>
+</ol>
+
+
+<hr />
+
+<ul>
+<li>无序的accessor类型</li>
+</ul>
+
+
+<p>不可变</p>
+
+<ol>
+<li>-countOf<key> 必须 count</li>
+<li>-enumeratorOf<key> 必须objectEnumerator</li>
+<li>-memberOf<key> 必须</li>
+</ol>
+
+
+<p>可变</p>
+
+<ol>
+<li>-add<Key>Object: or -add<Key>: 必须实现一个</li>
+<li>-remove<Key>Object: or -remove<Key>: 必须实现一个</li>
+<li>-intersect<Key> 可选</li>
+</ol>
+
+
+<h1>KVC验证</h1>
+
+<h2>调用验证方法</h2>
+
+<ul>
+<li><code>validateValue:forKey:error:</code>默认实现是匹配模式<em>validate<Key>:error:</em></li>
+<li>自动验证,一般CoreData会自动验证</li>
+<li>验证scalar values</li>
+</ul>
+
+
+<h1>确保兼容KVC</h1>
+
+<h2>属性和对一关系</h2>
+
+<ul>
+<li><code>-&lt;key&gt;</code>,<code>-is&lt;key&gt;</code>或者实例变量<code>&lt;key&gt;</code>或者<code>_&lt;key&gt;</code>,也可以用大写</li>
+<li>可变属性也有<code>set&lt;key&gt;</code></li>
+<li><code>set&lt;key&gt;</code>不会执行验证</li>
+<li>如果验证对key合适,实现<code>-validate&lt;key&gt;:error:</code></li>
+</ul>
+
+
+<h2>有序对多关系</h2>
+
+<ul>
+<li><code>-&lt;key&gt;</code></li>
+<li>实例变量<code>&lt;key&gt;</code>,或者<code>_&lt;key&gt;</code></li>
+<li><code>-countOf&lt;key&gt;</code>和 <code>-objectIn&lt;Key&gt;AtIndex:</code>或<code>-&lt;key&gt;AtIndexes:</code></li>
+<li><code>-get&lt;key&gt;:range:</code>
+对可变有序对多关系来说,还要</li>
+<li><code>insertObject:in&lt;Key&gt;AtIndex:</code>或<code>-insert&lt;Key&gt;:atIndexes:</code></li>
+<li><code>removeObjectFrom&lt;Key&gt;AtIndex:</code>或<code>remove&lt;Key&gt;AtIndexes:</code></li>
+<li>可选,<code>-replaceObjectIn&lt;Key&gt;AtIndex:withObject:</code>或<code>replace&lt;Key&gt;AtIndexes:with&lt;ley&gt;:</code></li>
+</ul>
+
+
+<h2>无序序对多关系</h2>
+
+<ul>
+<li><code>-&lt;key&gt;</code></li>
+<li>实例变量<code>&lt;key&gt;</code>或<code>_&lt;key&gt;</code></li>
+<li><code>-countOf&lt;key&gt;</code>,<code>-enumerateOf&lt;key&gt;</code>和<code>-memberOf&lt;key&gt;</code>
+对可变的无序关系来说,还要</li>
+<li><code>-add&lt;key&gt;Object:</code>或<code>-add&lt;Key&gt;</code></li>
+<li><code>-remove&lt;key&gt;Object:</code>或<code>-remove&lt;key&gt;</code></li>
+<li>可选,<code>-intersect&lt;key&gt;:</code>和<code>-set&lt;Key&gt;:</code></li>
+</ul>
+
+
+<h1>扩展数据类型</h1>
+
+<h2>表示非对象类型的值</h2>
+
+<p><code>valueForKey:</code>和<code>setValue:forKey:</code>提供自动封装非对象类型的值</p>
+
+<h2>处理空值</h2>
+
+<p>默认的<code>setNilValueForKey:</code>会抛出<code>NSInvalidArgumentException</code>异常,子类可以重写该方法</p>
+
+<h1>对集合的操作</h1>
+
+<p><strong>keypathToCollection.@collectionOperator.keypathToProperty</strong></p>
+
+<p>@avg</p>
+
+<ul>
+<li><code>NSNumber *transactionAverage = [transactions valueForKeyPath:@"@avg.amount"];</code>@count</li>
+<li><p><code>NSNumber *numberOfTransactions = [transactions valueForKeyPath:@"@count"];</code>
+@max- <code>NSDate *latestDate = [transactions valueForKeyPath:@"@max.date"];</code>@min</p></li>
+<li><p><code>NSDate *earliestDate = [transactions valueForKeyPath:@"@min.date"];</code>@sum</p></li>
+<li><p><code>NSNumber *amountSum = [transactions valueForKeyPath:@"@sum.amount"];</code>@distinctUnionOfObjects</p></li>
+<li><code>NSArray *payees = [transactions valueForKeyPath:@"@distinctUnionOfObjects.payee"];</code>@unionOfObjects</li>
+<li><code>NSArray *payees = [transactions valueForKeyPath:@"@unionOfObjects.payee"];</code>数组和set操作
+@distinctUnionOfArrays</li>
+<li><code>NSArray *payees = [arrayOfTransactionsArrays valueForKeyPath:@"@distinctUnionOfArrays.payee"]</code>@unionOfArrays</li>
+<li><code>NSArray *payees = [arrayOfTransactionsArraysvalueForKeyPath:@"@unionOfArrays.payee"];</code>
+@distinctUnionOfSets</li>
+</ul>
+
+
+<h1>KVC方法搜索实现细节</h1>
+
+<h2>简单属性</h2>
+
+<p><code>setValue:forKey:</code>调用成员是按照以下模式:
+1. 对象类搜索是否存在存取方法<code>set&lt;Key&gt;:</code>
+2. 如果没有,对象类方法<code>accessInstanceVariablesDirectly</code>返回YES.对象一词按顺序搜索<code>_&lt;key&gt;</code>,<code>_is&lt;Key&gt;</code>,<code>&lt;key&gt;</code>,<code>is&lt;Key&gt;</code>
+3. 如果定位到函数或实例变量,进行设置值.如有必要,可以拆开对象(NSNumber,NSValue)
+4. 如果仍然没有,调用<code>setValue:forUndefinedKey:</code></p>
+
+<p><code>valueForKey:</code>调用成员是按照以下模式:
+1. 按顺序搜索<code>get&lt;Key&gt;</code>,<code>&lt;key&gt;</code>,<code>is&lt;Key&gt;</code>.如果结果是扩展类型,也可以返回NSNumber或NSValue类型
+2. <code>countOf&lt;Key&gt;</code>和<code>objectIn&lt;Key&gt;AtIndex:</code>(NSArray)或<code>&lt;key&gt;AtIndexes:</code>，备选<code>get&lt;Key&gt;:range:</code>
+3. <code>countOf&lt;Key&gt;</code>,<code>enumeratorOf&lt;Key&gt;</code>和<code>memberOf&lt;Key&gt;</code>
+4. 如果<code>accessInstanceVariablesDirectly</code>返回YES.类会寻找实例变量<code>_&lt;key&gt;</code>,<code>_is&lt;key&gt;</code>,<code>&lt;key&gt;</code>和<code>is&lt;key&gt;</code>.必要时做转化
+5. <code>valueForUndefinedKey:</code></p>
+
+<h2>读有序集合</h2>
+
+<ol>
+<li><code>insertObject:in&lt;Key&gt;AtIndex:</code>和<code>removeObjectFrom&lt;Key&gt;AtIndex:</code>(对应NSMutableArray的 <code>insertObject:atIndex:</code> and <code>removeObjectAtIndex:</code>).或者<code>insert&lt;Key&gt;:atIndexes:</code>和<code>remove&lt;Key&gt;AtIndexes:</code>.或者提高性能使用<code>replaceObjectIn&lt;Key&gt;AtIndex:withObject:</code>或<code>replace&lt;Key&gt;AtIndexes:with&lt;Key&gt;:</code></li>
+<li>搜索<code>set&lt;Key&gt;:</code></li>
+<li>如果类方法<code>accessInstanceVariablesDirectly</code>返回YES.搜索实例变量<code>_&lt;key&gt;</code>或<code>&lt;key&gt;</code></li>
+<li><code>setValue:forUndefinedKey:</code>(报错)</li>
+</ol>
+
+
+<h2>写有序集合</h2>
+
+<ol>
+<li><code>insertObject:in&lt;key&gt;AtIndex:</code>和<code>removeObjectFrom&lt;Key&gt;AtIndex:</code></li>
+<li><code>set&lt;Key&gt;:</code></li>
+<li>如果类方法<code>accessInstanceVariablesDirectly</code>返回YES.搜索<code>_&lt;key&gt;</code>或<code>&lt;key&gt;</code></li>
+<li><code>setValue:forUndefinedKey:</code>(报错)</li>
+</ol>
+
+
+<h2>读无序集合</h2>
+
+<ol>
+<li><code>add&lt;Key&gt;Object:</code>和<code>remove&lt;Key&gt;Object:</code></li>
+<li>CoreData似管理</li>
+<li><code>set&lt;Key&gt;:</code></li>
+<li>如果类方法<code>accessInstanceVariablesDirectly</code>返回YES,搜索实例变量<code>_&lt;key&gt;</code>和<code>&lt;key&gt;</code></li>
+<li><code>setValue:forUndefinedKey:</code></li>
+</ol>
+
+
+<h1>更多资料</h1>
+
+<ol>
+<li><a href="http://stackoverflow.com/questions/15968741/ios-kvc-why-doesnt-it-invoke-countofkey-when-i-invoke-myobject-valueforke/">http://stackoverflow.com/questions/15968741/ios-kvc-why-doesnt-it-invoke-countofkey-when-i-invoke-myobject-valueforke/</a></li>
+<li><a href="http://iloss.me/post/kai-fa/2014-01-18-ios-kvc">http://iloss.me/post/kai-fa/2014-01-18-ios-kvc</a></li>
+<li><a href="http://nijino.qiniudn.com/blog/2013/07/02/using-kvc/">http://nijino.qiniudn.com/blog/2013/07/02/using-kvc/</a></li>
+<li><a href="http://zhangbin.cc/2012/08/16/kvc-kvo/">http://zhangbin.cc/2012/08/16/kvc-kvo/</a></li>
+<li><a href="http://nshipster.com/kvc-collection-operators/">http://nshipster.com/kvc-collection-operators/</a></li>
+</ol>
+
+]]></content>
+  </entry>
+  
+</feed>

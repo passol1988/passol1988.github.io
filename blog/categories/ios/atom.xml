@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: ios | Xblog]]></title>
+  <link href="http://passol.tk/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://passol.tk/"/>
+  <updated>2015-09-03T21:56:22+08:00</updated>
+  <id>http://passol.tk/</id>
+  <author>
+    <name><![CDATA[passol]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[第一篇]]></title>
+    <link href="http://passol.tk/blog/2014/10/21/first/"/>
+    <updated>2014-10-21T00:33:47+08:00</updated>
+    <id>http://passol.tk/blog/2014/10/21/first</id>
+    <content type="html"><![CDATA[<pre><code class="objc HelloWorld http://passol.tk Source Article">
+    NSLog(@"Hello world!");
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>
