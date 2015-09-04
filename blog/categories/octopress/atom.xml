@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress | Xblog]]></title>
   <link href="http://passol1988.github.io/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://passol1988.github.io/"/>
-  <updated>2015-09-05T06:32:02+08:00</updated>
+  <updated>2015-09-05T06:41:06+08:00</updated>
   <id>http://passol1988.github.io/</id>
   <author>
     <name><![CDATA[passol]]></name>
@@ -53,6 +53,19 @@ system "git push -u gitcafe master:gitcafe-pages"
 <li>如果还嫌不够,再搞个<strong>监控宝</strong>,监控下性能</li>
 </ul>
 
+
+<h2>一些常用的命令</h2>
+
+<pre><code>git branch -d &lt;branchname&gt;    # deletes local branch
+git push origin :&lt;branchname&gt; # deletes remote branch
+</code></pre>
+
+<pre><code>rake new_post[‘article name’] //生成新博文
+rake generate //生成静态文件
+rake watch //检测文件变化,实时生成文件
+rake preview //在localhost:4000预览效果
+rake deploy //发布文件
+</code></pre>
 ]]></content>
   </entry>
   
