@@ -7,10 +7,12 @@
 	<meta name="author" content="passol">
 
 	
-	<meta name="description" content="内置Gesture UITapGestureRecognizer,UIPinchGestureRecognizer,
-UIPanGestureRecognizer,
-UISwipeGestureRecognizer,
-UIRotationGestureRecognizer, &hellip;">
+	<meta name="description" content="这个属于谈滥的话题,作者最开始用coding.net,无奈免费的演示平台不支持自定义域名,没办法又换回gitcafe 代码也并不复杂,直接贴代码 1
+2
+3
+4
+cd _deploy //注意发布的只是deploy文件夹内容而已
+git remote add gitcafe git@ &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -45,7 +47,7 @@ UIRotationGestureRecognizer, &hellip;">
 		<div class="container">
 			<form action="https://www.google.com.tw/search" method="get">
 				<input type="text" name="q" results="0">
-				<input type="hidden" name="q" value="site:passol.tk">
+				<input type="hidden" name="q" value="site:passol1988.github.io">
 			</form>
 		</div>
 	</div>
@@ -72,7 +74,7 @@ UIRotationGestureRecognizer, &hellip;">
 	</div>
 	<form class="search" action="https://www.google.com.tw/search" method="get">
 		<input class="alignright" type="text" name="q" results="0">
-		<input type="hidden" name="q" value="site:passol.tk">
+		<input type="hidden" name="q" value="site:passol1988.github.io">
 	</form>
 </nav>
 
@@ -81,6 +83,88 @@ UIRotationGestureRecognizer, &hellip;">
 		
 	
 	<div id="content" class="inner">
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2015/09/05/distribute-octopress/">
+		
+			同时部署octopress到github和gitcafe</a>
+	</h2>
+	<div class="entry-content">
+		<blockquote><p>这个属于谈滥的话题,作者最开始用coding.net,无奈免费的演示平台不支持自定义域名,没办法又换回gitcafe</p></blockquote>
+
+<p>代码也并不复杂,直接贴代码</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">cd</span> <span class="n">_deploy</span> <span class="c1">//注意发布的只是deploy文件夹内容而已</span>
+</span><span class='line'><span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">gitcafe</span> <span class="n">git</span><span class="p">@</span><span class="n">gitcafe</span><span class="p">.</span><span class="nl">com</span><span class="p">:</span><span class="n">passol</span><span class="o">/</span><span class="n">passol</span><span class="p">.</span><span class="n">git</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span>
+</span><span class='line'><span class="n">git</span> <span class="n">push</span> <span class="o">-</span><span class="n">u</span> <span class="n">gitcafe</span> <span class="nl">master</span><span class="p">:</span><span class="n">gitcafe</span><span class="o">-</span><span class="n">pages</span>
+</span><span class='line'><span class="c1">//gitcafe一定要建立和username相同的repo名,并且只能提交到gitcafe-pages或gh-pages才可以</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以直接修改<strong>Rakefile</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">system</span> <span class="s">&quot;git remote add gitcafe git@gitcafe.com:passol/passol.git &gt;&gt; /dev/null 2&gt;&amp;1&quot;</span>
+</span><span class='line'><span class="n">system</span> <span class="s">&quot;git push -u gitcafe master:gitcafe-pages&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>插入到
+<img src="http://blog.devtang.com/images/gitcafe-edit-rakefile.jpg" alt="rakefile" /></p>
+
+<hr />
+
+<h2>设置域名解析</h2>
+
+<ul>
+<li>在repo目录下创建一个名为<code>CNAME</code>的文件（无后缀）</li>
+<li>打开CNAME，在里面写入你要绑定的域名(<code>passol.tk</code>和<code>www.passol.tk</code>)</li>
+<li>1)请在域名管理里添加一条CNAME记录，指向username.github.io</li>
+<li>2)或者域名管理里添加一条A记录，指向<code>192.30.252.153</code>或<code>192.30.252.154</code>
+等待生效,如果不知道ip,可以使用<code>dig passol.github.io +nostats +nocmd +nocomments</code>查询下具体的ip</li>
+<li>gitcafe类似,可以自定义域名,就不需要手动添加CNAME文件</li>
+<li>在<strong>dnspod</strong>注册下域名,国外走github,国内走gitcafe</li>
+<li>如果还嫌不够,再搞个<strong>监控宝</strong>,监控下性能</li>
+</ul>
+
+
+		
+		
+	</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-09-05T05:09:15+08:00" pubdate data-updated="true"></time></div>
+	<div class="tags">
+
+
+	<a class='category' href='/blog/categories/octopress/'>octopress</a>
+
+
+</div>
+	
+</div>
+</article>
 
 
     <article class="post">
@@ -99,10 +183,28 @@ UIRotationGestureRecognizer, &hellip;">
 <em>UIRotationGestureRecognizer</em>,<em>UILongPressGestureRecognizer</em>,</p>
 
 <ol>
-<li><p>指定顺序
-swipe和pan手势</p></li>
-<li><p>dd</p></li>
-<li><p>dd</p></li>
+<li>指定顺序
+swipe和pan手势</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">panRecognizer</span> <span class="nl">requireGestureRecognizerToFail</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">swipeRecognizer</span><span class="p">];</span>
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li><p>防止手势被识别</p>
+
+<p> gestureRecognizer:shouldReceiveTouch:
+ gestureRecognizerShouldBegin:</p></li>
+<li><p>同时识别手势</p>
+
+<p>  gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:</p>
+
+<p>  [rotationGestureRecognizer canPreventGestureRecognizer:pinchGestureRecognizer];    canBePreventedByGestureRecognizer:</p></li>
 </ol>
 
 
@@ -1624,136 +1726,6 @@ self.button.rac_command = [[RACCommand alloc] initWithEnabled:validEmailSingal s
 </div>
 </article>
 
-
-    <article class="post">
-	<h2 class="title">
-		
-		<a href="/blog/2014/10/23/frp-in-iosfan-yi-2/">
-		
-			FRP in IOS翻译(2)</a>
-	</h2>
-	<div class="entry-content">
-		<h1>使用<em>RXCollections</em>函数式编程</h1>
-
-<h2>高阶函数</h2>
-
-<ul>
-<li>使用一个或多个函数当输入</li>
-<li>输出一个函数
-在OC中使用Block,例如:
-遍历函数
-<code>
-NSArray *array = @[@(1), @(2), @(3)]
-</code>
-我们可以:
-<code>
-for (NSNumber *number in array){
-  NSLog(@"%@", number);
-}
-</code>
-也可以
-<code>
-[array enumerateObjectsUsingBlock:^(NSNumber *number, NSUInteger idx, BOOL *stop)]{
-  NSLog(@"%@", number);
-}
-</code>
-高阶函数就是函数体,我们可以使用<strong>RXCollections</strong></li>
-</ul>
-
-
-<h2>安装RXCollections</h2>
-
-<p><code>
-sudo gem install cocoapods
-pod init
-</code>
-编写podfile:
-<code>
-platform :ios, "6.0"
-target "Playground" do
-pod "RXCollections", "1.0"
-end
-target "PlaygroundTests" do
-end
-</code>
-然后:
-<code>
-pod install
-</code></p>
-
-<p>接着用上面的例子
-<code>
-NSArray *array = @[@(1), @(2), @(3)]
-</code></p>
-
-<h2>Map</h2>
-
-<p><code>
-NSArray *mappedArray = [array rx_mapWithBlock:^id(id each) {
-    return @(pow([each integerValue], 2));
-}]
-</code>
-结果编程 (1, 4, 9)
-特点:
-1. 没有修改原值
-2. 生成的也是个不可变的数组</p>
-
-<h2>Filter</h2>
-
-<p><code>
-NSArray *filteredArray = [array rx_filterWithBlock: ^BOOL(id each){
-    return ([each integerValue] % 2 == 0);
-}]
-</code></p>
-
-<h2>Fold(其实就是求和)</h2>
-
-<p><code>
-NSNumber *sum = [array rx_foldWithBlock:^id(id memo, id each){
-    return @([memo integerValue] + [each integerValue]);
-}]
-</code>
-数组的每一个成员就是一个sequence, memo就是上一次调用block的返回值(初始为nil)
-我们可以这么做:
-<code>
-[[array rx_mapWithBlock:^id(id each) {
-    return [each stringValue];
-}] rx_foldInitialValue:@"" block:^id(id memo, id each) {
-    return [memo stringByAppendString:each];
-}];
-</code>
-确实更消耗性能不过iphone不怕,硬件不再是短板</p>
-
-		
-		
-	</div>
-
-
-<div class="meta">
-	<div class="date">
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-10-23T01:22:57+08:00" pubdate data-updated="true"></time></div>
-	<div class="tags">
-
-
-	<a class='category' href='/blog/categories/rac-reactivecocoa-fan-yi/'>rac,reactivecocoa,翻译</a>
-
-
-</div>
-	
-</div>
-</article>
-
 <nav id="pagenavi">
     
     
@@ -1761,7 +1733,7 @@ NSNumber *sum = [array rx_foldWithBlock:^id(id memo, id each){
     
     <div class="center"><a href="/blog/archives">Blog Archives</a></div>
 </nav></div>
-	<footer id="footer" class="inner">Copyright &copy; 2014
+	<footer id="footer" class="inner">Copyright &copy; 2015
 
     passol
 

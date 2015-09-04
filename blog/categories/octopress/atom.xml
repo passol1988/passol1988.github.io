@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress | Xblog]]></title>
   <link href="http://passol1988.github.io/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://passol1988.github.io/"/>
-  <updated>2015-09-04T03:39:20+08:00</updated>
+  <updated>2015-09-05T06:23:04+08:00</updated>
   <id>http://passol1988.github.io/</id>
   <author>
     <name><![CDATA[passol]]></name>
@@ -12,6 +12,48 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[同时部署octopress到github和gitcafe]]></title>
+    <link href="http://passol1988.github.io/blog/2015/09/05/distribute-octopress/"/>
+    <updated>2015-09-05T05:09:15+08:00</updated>
+    <id>http://passol1988.github.io/blog/2015/09/05/distribute-octopress</id>
+    <content type="html"><![CDATA[<blockquote><p>这个属于谈滥的话题,作者最开始用coding.net,无奈免费的演示平台不支持自定义域名,没办法又换回gitcafe</p></blockquote>
+
+<p>代码也并不复杂,直接贴代码</p>
+
+<pre><code class="objc">cd _deploy //注意发布的只是deploy文件夹内容而已
+git remote add gitcafe git@gitcafe.com:passol/passol.git &gt;&gt; /dev/null 2&gt;&amp;1
+git push -u gitcafe master:gitcafe-pages 
+//gitcafe一定要建立和username相同的repo名,并且只能提交到gitcafe-pages或gh-pages才可以
+</code></pre>
+
+<p>也可以直接修改<strong>Rakefile</strong></p>
+
+<pre><code class="objc">system "git remote add gitcafe git@gitcafe.com:passol/passol.git &gt;&gt; /dev/null 2&gt;&amp;1"
+system "git push -u gitcafe master:gitcafe-pages"
+</code></pre>
+
+<p>插入到
+<img src="http://blog.devtang.com/images/gitcafe-edit-rakefile.jpg" alt="rakefile" /></p>
+
+<hr />
+
+<h2>设置域名解析</h2>
+
+<ul>
+<li>在repo目录下创建一个名为<code>CNAME</code>的文件（无后缀）</li>
+<li>打开CNAME，在里面写入你要绑定的域名(<code>passol.tk</code>和<code>www.passol.tk</code>)</li>
+<li>1)请在域名管理里添加一条CNAME记录，指向username.github.io</li>
+<li>2)或者域名管理里添加一条A记录，指向<code>192.30.252.153</code>或<code>192.30.252.154</code>
+等待生效,如果不知道ip,可以使用<code>dig passol.github.io +nostats +nocmd +nocomments</code>查询下具体的ip</li>
+<li>gitcafe类似,可以自定义域名,就不需要手动添加CNAME文件</li>
+<li>在<strong>dnspod</strong>注册下域名,国外走github,国内走gitcafe</li>
+<li>如果还嫌不够,再搞个<strong>监控宝</strong>,监控下性能</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[部署octopress到heroku]]></title>
