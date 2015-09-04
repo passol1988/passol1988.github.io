@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress | Xblog]]></title>
   <link href="http://passol1988.github.io/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://passol1988.github.io/"/>
-  <updated>2015-09-05T06:23:04+08:00</updated>
+  <updated>2015-09-05T06:32:02+08:00</updated>
   <id>http://passol1988.github.io/</id>
   <author>
     <name><![CDATA[passol]]></name>
@@ -34,8 +34,9 @@ git push -u gitcafe master:gitcafe-pages
 system "git push -u gitcafe master:gitcafe-pages"
 </code></pre>
 
-<p>插入到
-<img src="http://blog.devtang.com/images/gitcafe-edit-rakefile.jpg" alt="rakefile" /></p>
+<p>插入到</p>
+
+<p><img src="http://blog.devtang.com/images/gitcafe-edit-rakefile.jpg" alt="" /></p>
 
 <hr />
 

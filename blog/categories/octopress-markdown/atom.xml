@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress,markdown | Xblog]]></title>
   <link href="http://passol1988.github.io/blog/categories/octopress-markdown/atom.xml" rel="self"/>
   <link href="http://passol1988.github.io/"/>
-  <updated>2015-09-05T06:23:04+08:00</updated>
+  <updated>2015-09-05T06:32:02+08:00</updated>
   <id>http://passol1988.github.io/</id>
   <author>
     <name><![CDATA[passol]]></name>
@@ -40,7 +40,7 @@
 <blockquote><p>我是引用 &gt;&lt;</p></blockquote>
 
 <ul>
-<li>我邮箱 <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#112;&#97;&#x73;&#x73;&#x6f;&#108;&#x40;&#x31;&#x36;&#51;&#46;&#x63;&#111;&#109;">&#112;&#97;&#115;&#115;&#x6f;&#x6c;&#x40;&#49;&#54;&#x33;&#46;&#x63;&#111;&#x6d;</a></li>
+<li>我邮箱 <a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#x3a;&#x70;&#x61;&#115;&#x73;&#111;&#x6c;&#x40;&#x31;&#x36;&#51;&#x2e;&#99;&#x6f;&#x6d;">&#112;&#x61;&#x73;&#x73;&#x6f;&#x6c;&#64;&#x31;&#x36;&#x33;&#x2e;&#99;&#111;&#109;</a></li>
 <li>链接可以 link <a href="http://passol.herokuapp.com">http://passol.herokuapp.com</a>, 也可以<a href="http://passol.herokuapp.com">链接</a></li>
 <li>也可以添加说明 <a href="http://passol.herokuapp.com" title="说明我">链接</a></li>
 <li>外部链接 <a href="http://passol.herokuapp.com">外部链接</a></li>
