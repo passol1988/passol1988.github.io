@@ -1,0 +1,256 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>NSProxy的用法  | Xblog</title>
+
+	<meta name="author" content="passol"> 
+	
+	<meta name="description" content="NSproxy是唯一不继承NSObject的基类,是一个只用于转发消息的抽象类。 基本用法和区别 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+@interface MyProxy : NSProxy
+@property (nonatomic, strong) id &hellip;"> <meta name="keywords" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="Xblog" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+	<link href="/stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+	
+	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+</head>
+
+
+
+<body>
+	<header id="header" class="inner"><h1>Xblog</h1>
+<nav id="main-nav"><ul>
+	<li><a href="/">Blog</a></li>
+	<li><a href="/archives">Archive</a></li>
+	<li><a href="/contact">Contact</a></li>
+</ul>
+</nav>
+
+
+</header>
+
+	<div id="content" class="inner"><article class="post">
+	<h2 class="title">NSProxy的用法</h2>
+	<div class="entry-content"><blockquote><p>NSproxy是唯一不继承NSObject的<code>基类</code>,是一个只用于转发消息的抽象类。</p></blockquote>
+
+<h3>基本用法和区别</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@interface MyProxy : NSProxy
+</span><span class='line'>@property (nonatomic, strong) id target;
+</span><span class='line'>@end
+</span><span class='line'>
+</span><span class='line'>@implementation THProxyA
+</span><span class='line'>- (id)initWithObject:(id)object {
+</span><span class='line'>    self.target = object;
+</span><span class='line'>    return self;
+</span><span class='line'>}
+</span><span class='line'>- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
+</span><span class='line'>    return [self.target methodSignatureForSelector:selector];
+</span><span class='line'>}
+</span><span class='line'>- (void)forwardInvocation:(NSInvocation *)invocation {
+</span><span class='line'>    [invocation invokeWithTarget:self.target];
+</span><span class='line'>}
+</span><span class='line'>@end
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><strong>NSProxy</strong>可以使用转发<code>respondsToSelector:</code>和<code>isKindOfClass:</code>,而NSObject则不能,需要手动添加上面两个方法</li>
+<li>NSObject不能转发category的方法,如<code>valueForKey:</code>是定义在NSKeyValueCoding这个NSObject的Category中的方法,而NSProxy不受影响。但由于ARC时会对声明的selector做严格监测,会报<a href="http://stackoverflow.com/a/20582863/1187415"><code>No visible @interface for Class declares the selector</code></a>,所以最好事先声明或者使用<em>performSelctor:</em>或者<em>NSInvocation</em></li>
+</ul>
+
+
+<h3>NSTimer</h3>
+
+<blockquote><p>因为Timer会引用target,而target如果retain了timer,就造成了循环引用。折中方式是使用<strong>WeakProxy</strong>的对象来引用,打破循环引用</p></blockquote>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@interface WeakProxy : NSProxy
+</span><span class='line'>@property (weak,nonatomic,readonly)id target;
+</span><span class='line'>+ (instancetype)proxyWithTarget:(id)target;
+</span><span class='line'>- (instancetype)initWithTarget:(id)target;
+</span><span class='line'>@end
+</span><span class='line'>
+</span><span class='line'>@implementation WeakProxy
+</span><span class='line'>- (instancetype)initWithTarget:(id)target{
+</span><span class='line'>    _target = target;
+</span><span class='line'>    return self;
+</span><span class='line'>}
+</span><span class='line'>+ (instancetype)proxyWithTarget:(id)target{
+</span><span class='line'>    return [[self alloc] initWithTarget:target];
+</span><span class='line'>}4
+</span><span class='line'>- (void)forwardInvocation:(NSInvocation *)invocation{
+</span><span class='line'>    SEL sel = [invocation selector];
+</span><span class='line'>    if ([self.target respondsToSelector:sel]) {
+</span><span class='line'>        [invocation invokeWithTarget:self.target];
+</span><span class='line'>    }
+</span><span class='line'>}ƒ
+</span><span class='line'>- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector{
+</span><span class='line'>    return [self.target methodSignatureForSelector:aSelector];
+</span><span class='line'>}
+</span><span class='line'>- (BOOL)respondsToSelector:(SEL)aSelector{
+</span><span class='line'>    return [self.target respondsToSelector:aSelector];
+</span><span class='line'>}
+</span><span class='line'>@end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如下使用</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>self.timer = [NSTimer timerWithTimeInterval:1
+</span><span class='line'>                                     target:[WeakProxy proxyWithTarget:self]
+</span><span class='line'>                                   selector:@selector(timerInvoked:)
+</span><span class='line'>                                   userInfo:nil
+</span><span class='line'>                                    repeats:YES];</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>取代delegate的胶水代码</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>id&lt;PSPDFResizableViewDelegate&gt; delegate = self.delegate;
+</span><span class='line'>if ([delegate respondsToSelector:@selector(resizableViewDidBeginEditing:)]) {
+</span><span class='line'>    [delegate resizableViewDidBeginEditing:self];
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>具体参考<a href="https://github.com/steipete/PSTDelegateProxy">PSTDelegateProxy</a>,用Message forwarding机制，来构建一个delegateProxy.</p>
+
+<ol>
+<li><code>methodSignatureForSelector:</code>and<code>forwardInvocation:</code>中判断是否respond</li>
+<li>利用<code>PSPDF_DELEGATE_PROXY</code>宏定义</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@interface PSPDFResizableView ()
+</span><span class='line'>@property (nonatomic, strong) id &lt;PSPDFResizableViewDelegate&gt; delegateProxy;
+</span><span class='line'>@end
+</span><span class='line'>
+</span><span class='line'>PSPDF_DELEGATE_PROXY(id &lt;PSPDFResizableViewDelegate&gt;)
+</span><span class='line'>
+</span><span class='line'>- (void)handleRecognizerStateBegan:(UIGestureRecognizer *)recognizer {
+</span><span class='line'>    [self.delegateProxy resizableViewDidBeginEditing:self];
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>纷享用到的IOC框架</h3>
+
+<p>这个下次讲述。</p>
+</div>
+
+
+<div class="meta">
+	<div class="date">
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2017-03-18T15:29:55+08:00" pubdate data-updated="true">Mar 18th, 2017</time></div>
+	
+
+<div class="tags">
+
+	<a class='category' href='/blog/categories/nsproxy/'>nsproxy</a>
+
+</div>
+
+
+</div>
+</article>
+</div>
+	<footer id="footer" class="inner">Copyright &copy; 2017
+ passol 
+<br>
+Powered by Octopress.
+</footer>
+	
+
+</body>
+</html>

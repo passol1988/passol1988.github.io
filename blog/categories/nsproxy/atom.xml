@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: nsproxy | Xblog]]></title>
+  <link href="http://passol1988.github.io/blog/categories/nsproxy/atom.xml" rel="self"/>
+  <link href="http://passol1988.github.io/"/>
+  <updated>2017-03-18T16:05:48+08:00</updated>
+  <id>http://passol1988.github.io/</id>
+  <author>
+    <name><![CDATA[passol]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[NSProxy的用法]]></title>
+    <link href="http://passol1988.github.io/blog/2017/03/18/nsproxyde-yong-fa/"/>
+    <updated>2017-03-18T15:29:55+08:00</updated>
+    <id>http://passol1988.github.io/blog/2017/03/18/nsproxyde-yong-fa</id>
+    <content type="html"><![CDATA[<blockquote><p>NSproxy是唯一不继承NSObject的<code>基类</code>,是一个只用于转发消息的抽象类。</p></blockquote>
+
+<h3>基本用法和区别</h3>
+
+<pre><code>@interface MyProxy : NSProxy
+@property (nonatomic, strong) id target;
+@end
+
+@implementation THProxyA
+- (id)initWithObject:(id)object {
+    self.target = object;
+    return self;
+}
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)selector {
+    return [self.target methodSignatureForSelector:selector];
+}
+- (void)forwardInvocation:(NSInvocation *)invocation {
+    [invocation invokeWithTarget:self.target];
+}
+@end
+</code></pre>
+
+<ul>
+<li><strong>NSProxy</strong>可以使用转发<code>respondsToSelector:</code>和<code>isKindOfClass:</code>,而NSObject则不能,需要手动添加上面两个方法</li>
+<li>NSObject不能转发category的方法,如<code>valueForKey:</code>是定义在NSKeyValueCoding这个NSObject的Category中的方法,而NSProxy不受影响。但由于ARC时会对声明的selector做严格监测,会报<a href="http://stackoverflow.com/a/20582863/1187415"><code>No visible @interface for Class declares the selector</code></a>,所以最好事先声明或者使用<em>performSelctor:</em>或者<em>NSInvocation</em></li>
+</ul>
+
+
+<h3>NSTimer</h3>
+
+<blockquote><p>因为Timer会引用target,而target如果retain了timer,就造成了循环引用。折中方式是使用<strong>WeakProxy</strong>的对象来引用,打破循环引用</p></blockquote>
+
+<pre><code>@interface WeakProxy : NSProxy
+@property (weak,nonatomic,readonly)id target;
++ (instancetype)proxyWithTarget:(id)target;
+- (instancetype)initWithTarget:(id)target;
+@end
+
+@implementation WeakProxy
+- (instancetype)initWithTarget:(id)target{
+    _target = target;
+    return self;
+}
++ (instancetype)proxyWithTarget:(id)target{
+    return [[self alloc] initWithTarget:target];
+}4
+- (void)forwardInvocation:(NSInvocation *)invocation{
+    SEL sel = [invocation selector];
+    if ([self.target respondsToSelector:sel]) {
+        [invocation invokeWithTarget:self.target];
+    }
+}ƒ
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector{
+    return [self.target methodSignatureForSelector:aSelector];
+}
+- (BOOL)respondsToSelector:(SEL)aSelector{
+    return [self.target respondsToSelector:aSelector];
+}
+@end
+</code></pre>
+
+<p>如下使用</p>
+
+<pre><code>self.timer = [NSTimer timerWithTimeInterval:1
+                                     target:[WeakProxy proxyWithTarget:self]
+                                   selector:@selector(timerInvoked:)
+                                   userInfo:nil
+                                    repeats:YES];
+</code></pre>
+
+<h3>取代delegate的胶水代码</h3>
+
+<pre><code>id&lt;PSPDFResizableViewDelegate&gt; delegate = self.delegate;
+if ([delegate respondsToSelector:@selector(resizableViewDidBeginEditing:)]) {
+    [delegate resizableViewDidBeginEditing:self];
+}
+</code></pre>
+
+<p>具体参考<a href="https://github.com/steipete/PSTDelegateProxy">PSTDelegateProxy</a>,用Message forwarding机制，来构建一个delegateProxy.</p>
+
+<ol>
+<li><code>methodSignatureForSelector:</code>and<code>forwardInvocation:</code>中判断是否respond</li>
+<li>利用<code>PSPDF_DELEGATE_PROXY</code>宏定义</li>
+</ol>
+
+
+<pre><code>@interface PSPDFResizableView ()
+@property (nonatomic, strong) id &lt;PSPDFResizableViewDelegate&gt; delegateProxy;
+@end
+
+PSPDF_DELEGATE_PROXY(id &lt;PSPDFResizableViewDelegate&gt;)
+
+- (void)handleRecognizerStateBegan:(UIGestureRecognizer *)recognizer {
+    [self.delegateProxy resizableViewDidBeginEditing:self];
+}
+</code></pre>
+
+<h3>纷享用到的IOC框架</h3>
+
+<p>这个下次讲述。</p>
+]]></content>
+  </entry>
+  
+</feed>
